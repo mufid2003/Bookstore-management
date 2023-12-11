@@ -12,32 +12,69 @@ import Grid from '@mui/material/Grid';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { MenuItem } from '@mui/material';
+import { useNavigate  } from 'react-router-dom';
 
-function Copyright(props) {
-  return (
-    <Typography variant="body2" color="text.secondary" align="center" {...props}>
-      {'Copyright © '}
-      <Link color="inherit" href="https://mui.com/">
-        Your Website
-      </Link>{' '}
-      {new Date().getFullYear()}
-      {'.'}
-    </Typography>
-  );
-}
+function Login() {
 
-const defaultTheme = createTheme();
+  let navigate = useNavigate();
 
-export default function Login() {
   const [isSignUp, setIsSignUp] = React.useState(false);
+  const [name, setName] = React.useState('');
+  const [username, setUsername] = React.useState('');
+  const [password, setPassword] = React.useState('');
+  const [email, setEmail] = React.useState('');
+  const [role, setRole] = React.useState('customer');
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get('email'),
-      password: data.get('password'),
-    });
+
+    try {
+      let response;
+      let endpoint;
+
+      if (isSignUp) {
+        endpoint = 'http://localhost:5000/api/users';
+        response = await fetch(endpoint, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ name, username, password, email, role }),
+        });
+      } else {
+        endpoint = 'http://localhost:5000/api/login';
+        response = await fetch(endpoint, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ username, password }),
+        });
+      }
+
+      if (response.ok) {
+        console.log('Request successful');
+
+        if (isSignUp) {
+          if (response.status === 201) {
+            // Registration successful
+            console.log('User registered successfully');
+            navigate('/'); // Redirect to the main page after successful registration
+          }
+        } else {
+          if (response.status === 200) {
+            // Login successful
+            console.log('Login successful');
+            navigate('/');  // Redirect to the main page after successful login
+          }
+        }
+      } else {
+        console.error('Request failed');
+      }
+    } catch (error) {
+      console.error('Error during request:', error.message);
+    }
   };
 
   const handleSignUpClick = () => {
@@ -49,7 +86,7 @@ export default function Login() {
   };
 
   return (
-    <ThemeProvider theme={defaultTheme}>
+    <ThemeProvider theme={createTheme()}>
       <Grid container component="main" sx={{ height: '100vh' }}>
         <CssBaseline />
         <Grid
@@ -83,15 +120,30 @@ export default function Login() {
               {isSignUp ? 'Sign Up' : 'Sign In'}
             </Typography>
             <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 1 }}>
+              {isSignUp && (
+                <TextField
+                  margin="normal"
+                  required
+                  fullWidth
+                  id="name"
+                  label="Name"
+                  name="name"
+                  autoComplete="name"
+                  autoFocus
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                />
+              )}
               <TextField
                 margin="normal"
                 required
                 fullWidth
-                id="email"
-                label="Email Address"
-                name="email"
-                autoComplete="email"
-                autoFocus
+                id="username"
+                label="Username"
+                name="username"
+                autoComplete="username"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
               />
               <TextField
                 margin="normal"
@@ -102,29 +154,42 @@ export default function Login() {
                 type="password"
                 id="password"
                 autoComplete="current-password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
               />
               {isSignUp && (
                 <TextField
                   margin="normal"
                   required
                   fullWidth
-                  name="confirmPassword"
-                  label="Confirm Password"
-                  type="password"
-                  id="confirmPassword"
-                  autoComplete="confirm-password"
+                  name="email"
+                  label="Email"
+                  type="email"
+                  id="email"
+                  autoComplete="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                 />
+              )}
+              {isSignUp && (
+                <TextField
+                  margin="normal"
+                  select
+                  fullWidth
+                  name="role"
+                  label="Role"
+                  value={role}
+                  onChange={(e) => setRole(e.target.value)}
+                >
+                  <MenuItem value="customer">Customer</MenuItem>
+                  <MenuItem value="employee">Employee</MenuItem>
+                </TextField>
               )}
               <FormControlLabel
                 control={<Checkbox value="remember" color="primary" />}
                 label="Remember me"
               />
-              <Button
-                type="submit"
-                fullWidth
-                variant="contained"
-                sx={{ mt: 3, mb: 2 }}
-              >
+              <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}>
                 {isSignUp ? 'Sign Up' : 'Sign In'}
               </Button>
               <Grid container>
@@ -145,7 +210,6 @@ export default function Login() {
                   )}
                 </Grid>
               </Grid>
-              <Copyright sx={{ mt: 5 }} />
             </Box>
           </Box>
         </Grid>
@@ -153,3 +217,5 @@ export default function Login() {
     </ThemeProvider>
   );
 }
+
+export default Login;

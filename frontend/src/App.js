@@ -10,7 +10,9 @@ function App() {
       <BrowserRouter>
       <Header/>
       <Routes>
-        <Route path='/login' exact element={<Login/>}/>
+      {/* <Route path="/login" render={(props) => <Login {...props} history={props.history} />} /> */}
+      <Route path='/login' element={<Login/>}/>
+
       </Routes>
       </BrowserRouter>
     

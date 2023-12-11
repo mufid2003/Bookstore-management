@@ -37,6 +37,9 @@ router.put('/users/:id', userController.updateUser);
 // Route to delete a user
 router.delete('/users/:id', userController.deleteUser);
 
+//Route to login user
+router.post('/login',userController.loginUser);
+
 
 
 // Route to list all orders

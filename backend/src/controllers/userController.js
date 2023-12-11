@@ -1,4 +1,5 @@
 const User = require('../models/User');
+const bcrypt = require('bcrypt');
 
 // Controller to list all users
 exports.getAllUsers = async (req, res) => {
@@ -39,16 +40,19 @@ exports.addUser = async (req, res) => {
     orders
   } = req.body;
 
+  const hashedPassword = await bcrypt.hash(password, 10);
+
   const newUser = new User({
     name,
     username,
-    password,
+    password: hashedPassword,
     email,
     role,
     cart,
     orders
   });
 
+  
   try {
     const savedUser = await newUser.save();
     res.status(201).json(savedUser);
@@ -111,3 +115,22 @@ exports.deleteUser = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
+//login
+exports.loginUser = async (req,res) => {
+  try {
+    const { username, password } = req.body;
+    const user = await User.findOne({ username });
+    if (!user) {
+      return res.status(401).json({ message: 'Invalid credentials' });
+    }
+    const passwordMatch = await bcrypt.compare(password, user.password);
+    if (!passwordMatch) {
+      return res.status(401).json({ message: 'Invalid credentials' });
+    }
+    // You might want to generate and send a token for authentication
+    res.status(200).json({ message: 'Login successful' });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+}
