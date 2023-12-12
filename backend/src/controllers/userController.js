@@ -17,7 +17,7 @@ exports.getOneUser = async (req, res) => {
 
   try {
     const user = await User.findById(id);
-    
+
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
@@ -52,7 +52,7 @@ exports.addUser = async (req, res) => {
     orders
   });
 
-  
+
   try {
     const savedUser = await newUser.save();
     res.status(201).json(savedUser);
@@ -117,7 +117,7 @@ exports.deleteUser = async (req, res) => {
 };
 
 //login
-exports.loginUser = async (req,res) => {
+exports.loginUser = async (req, res) => {
   try {
     const { username, password } = req.body;
     const user = await User.findOne({ username });
@@ -129,7 +129,14 @@ exports.loginUser = async (req,res) => {
       return res.status(401).json({ message: 'Invalid credentials' });
     }
     // You might want to generate and send a token for authentication
-    res.status(200).json({ message: 'Login successful' });
+    res.status(200).json({
+      message: 'Login successful',
+      user: {
+        _id: user._id,
+        username: user.username,
+        role: user.role,
+      }
+    });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

@@ -13,7 +13,7 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { MenuItem } from '@mui/material';
-import { useNavigate  } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 function Login() {
 
@@ -66,7 +66,18 @@ function Login() {
           if (response.status === 200) {
             // Login successful
             console.log('Login successful');
-            navigate('/');  // Redirect to the main page after successful login
+            const responseData = await response.json();
+            console.log(responseData);
+            if (responseData.user.role === 'customer') {
+              navigate('/customer');
+            } else if (responseData.user.role === 'employee') {
+              navigate('/employee');
+            } else if (responseData.user.role === 'admin') {
+              navigate('/admin');
+            } else {
+              // Default route if the role is not recognized
+              navigate('/');
+            }
           }
         }
       } else {
