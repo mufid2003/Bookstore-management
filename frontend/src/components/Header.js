@@ -8,6 +8,7 @@ import MenuIcon from '@mui/icons-material/Menu';
 import { Link } from 'react-router-dom';
 
 const Header = () => {
+  const user_id = localStorage.getItem('user_id');
   return (
     <AppBar position="static" sx={{ background: 'linear-gradient(45deg, #4CAF50, #8BC34A)' }}>
       <Toolbar>
@@ -72,6 +73,7 @@ const Header = () => {
 
         {/* Styled Login button */}
 
+
         <Link to='/login'> 
         <Button
           sx={{
@@ -84,7 +86,10 @@ const Header = () => {
               backgroundColor: '#45a049', // Darker green on hover
             },
           }}
-        >Login</Button> </Link>
+        >
+           {user_id ? 'Logout' : 'Login'}         
+          
+          </Button> </Link>
     </Toolbar>
     </AppBar >
   );

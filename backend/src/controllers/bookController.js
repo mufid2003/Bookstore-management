@@ -12,15 +12,14 @@ exports.getAllBooks = async (req, res) => {
 
 // Controller to list only one book
 exports.getOneBook = async (req, res) => {
-  const { id } = req.params;
 
+  const { id } = req.params;
   try {
     const book = await Book.findById(id);
-    
     if (!book) {
       return res.status(404).json({ message: 'Book not found' });
     }
-
+    
     res.json(book);
   } catch (error) {
     res.status(500).json({ message: error.message });

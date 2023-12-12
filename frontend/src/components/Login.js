@@ -67,6 +67,7 @@ function Login() {
             // Login successful
             console.log('Login successful');
             const responseData = await response.json();
+            localStorage.setItem('user_id',responseData.user._id);
             console.log(responseData);
             if (responseData.user.role === 'customer') {
               navigate('/customer');
