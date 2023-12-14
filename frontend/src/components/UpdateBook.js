@@ -17,11 +17,15 @@ export default function UpdateBook() {
     description: '',
     publishdate: null,
   });
+  const token = localStorage.getItem('token');
 
   useEffect(() => {
     // Fetch book details using bookId
-    axios.get(`${process.env.REACT_APP_API_URL}/books/${id}`)
-      .then((response) => {
+    axios.get(`${process.env.REACT_APP_API_URL}/books/${id}`,{
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }).then((response) => {
         setBook(response.data);
       })
       .catch((error) => {
@@ -35,7 +39,11 @@ export default function UpdateBook() {
       // Send updated book details to the server
       const response = await axios.put(
         `${process.env.REACT_APP_API_URL}/books/${id}`,
-        book
+        book,{
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
 
       console.log('Book updated successfully:', response.data);

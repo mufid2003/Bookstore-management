@@ -8,6 +8,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 export default function Viewcart() {
   const { id } = useParams();
   const [cart, setCart] = useState([]);
+  const token = localStorage.getItem('token');
 
   useEffect(() => {    
     fetchCartDetails();
@@ -16,7 +17,15 @@ export default function Viewcart() {
 
   const fetchCartDetails = async () => {
     try {
-      let res = await fetch(`${process.env.REACT_APP_API_URL}/cart/${id}`)
+
+      const headers = {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json', // Adjust content type based on your API requirements
+      };
+
+      let res = await fetch(`${process.env.REACT_APP_API_URL}/cart/${id}`, {
+        headers: headers,
+      })
       let data = await res.json();
       setCart(data.booksWithQuantity);
     }
@@ -29,7 +38,11 @@ export default function Viewcart() {
 
     try {
       let userId = localStorage.getItem('user_id');
-      await axios.put(`${process.env.REACT_APP_API_URL}/cart/${userId}/${id}`, { qt: quant + change }).then(res=>{
+      await axios.put(`${process.env.REACT_APP_API_URL}/cart/${userId}/${id}`, { qt: quant + change },{
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }).then(res=>{
       });
 
       // Assuming the API response includes the updated cart details
@@ -51,7 +64,11 @@ export default function Viewcart() {
   
         if (isConfirmed) {
           // Implement your delete logic here
-          axios.delete(`${process.env.REACT_APP_API_URL}/cart/${userId}/${bookId}`).then(res => {
+          axios.delete(`${process.env.REACT_APP_API_URL}/cart/${userId}/${bookId}`,{
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }).then(res => {
             alert('Book removed from cart successfully'); // You can replace this with your actual success message
             setCart((prevBooks) => prevBooks.filter((book) => book.bookDetails._id !== bookId));
           }).catch(e => {
@@ -84,7 +101,11 @@ export default function Viewcart() {
             };
       
             // Make a POST request to the add order API
-            const response = await axios.post(`${process.env.REACT_APP_API_URL}/orders`, orderPayload);
+            const response = await axios.post(`${process.env.REACT_APP_API_URL}/orders`, orderPayload,{
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            });
       
             // Assuming the API response includes the newly created order details
             console.log('Order placed:', response.data);

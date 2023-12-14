@@ -69,6 +69,7 @@ function Login() {
             const responseData = await response.json();
             localStorage.setItem('user_id',responseData.user._id);
             console.log(responseData);
+            localStorage.setItem('token',responseData.token);
             if (responseData.user.role === 'customer') {
               navigate('/customer');
             } else if (responseData.user.role === 'employee') {

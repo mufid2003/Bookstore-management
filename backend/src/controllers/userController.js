@@ -1,5 +1,6 @@
 const User = require('../models/User');
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 
 // Controller to list all users
 exports.getAllUsers = async (req, res) => {
@@ -121,24 +122,34 @@ exports.loginUser = async (req, res) => {
   try {
     const { username, password } = req.body;
     const user = await User.findOne({ username });
+
     if (!user) {
       return res.status(401).json({ message: 'Invalid credentials' });
     }
+
     const passwordMatch = await bcrypt.compare(password, user.password);
+
     if (!passwordMatch) {
       return res.status(401).json({ message: 'Invalid credentials' });
     }
-    // You might want to generate and send a token for authentication
+
+    // Generate JWT token
+    const token = jwt.sign(
+      { userId: user._id, username: user.username, role: user.role },
+      process.env.JWT_SECRET,
+      { expiresIn: '1h' } // Token expires in 1 hour
+    );
+
     res.status(200).json({
       message: 'Login successful',
       user: {
         _id: user._id,
         username: user.username,
         role: user.role,
-      }
+      },
+      token,
     });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
-}
-
+};

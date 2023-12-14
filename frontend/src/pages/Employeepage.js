@@ -8,9 +8,14 @@ import { Link } from 'react-router-dom'
 
 export default function Employeepage() {
   const [books, setBooks] = useState([]);
+  const token = localStorage.getItem('token');
 
   useEffect(() => {
-    axios.get(`${process.env.REACT_APP_API_URL}/books`).then(res => {
+    axios.get(`${process.env.REACT_APP_API_URL}/books`,{
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }).then(res => {
       console.log(res);
       setBooks(res.data);
     }).catch(e => {
@@ -27,7 +32,11 @@ export default function Employeepage() {
 
       if (isConfirmed) {
         // Implement your delete logic here
-        axios.delete(`${process.env.REACT_APP_API_URL}/books/${bookId}`).then(res => {
+        axios.delete(`${process.env.REACT_APP_API_URL}/books/${bookId}`,{
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }).then(res => {
           console.log(res.data);
           alert('Book deleted successfully'); // You can replace this with your actual success message
           setBooks((prevBooks) => prevBooks.filter((book) => book._id !== bookId));

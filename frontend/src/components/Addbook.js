@@ -15,6 +15,8 @@ export default function Addbook() {
         publishdate: null,
     });
 
+    const token = localStorage.getItem('token');
+
     const handleInputChange = (field) => (event) => {
         setBookData({ ...bookData, [field]: event.target.value });
     };
@@ -25,7 +27,11 @@ export default function Addbook() {
         // Pass the bookData to the parent component
         try {
             console.log(bookData);
-            const response = await axios.post(`${process.env.REACT_APP_API_URL}/books`, bookData);
+            const response = await axios.post(`${process.env.REACT_APP_API_URL}/books`, bookData,{
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                },
+              });
 
             if (response.status === 201) {
                 // Book added successfully, you can perform any additional actions here

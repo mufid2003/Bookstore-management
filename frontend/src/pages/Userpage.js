@@ -11,6 +11,7 @@ export default function Userpage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [filteredBooks, setFilteredBooks] = useState(books);
   let user_id = localStorage.getItem('user_id');
+  const token = localStorage.getItem('token');
 
   let navigate = useNavigate();
 
@@ -22,7 +23,11 @@ export default function Userpage() {
   };
 
   useEffect(() => {
-    axios.get(`${process.env.REACT_APP_API_URL}/books`).then(res => {
+    axios.get(`${process.env.REACT_APP_API_URL}/books`,{
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }).then(res => {
       setBooks(res.data);
       setFilteredBooks(res.data);
     }).catch(e => {
@@ -47,7 +52,11 @@ export default function Userpage() {
     let userId = localStorage.getItem('user_id');
 
     try{
-      axios.post(`${process.env.REACT_APP_API_URL}/addtocart/${userId}/cart/${book._id}`).then(res =>{
+      axios.post(`${process.env.REACT_APP_API_URL}/addtocart/${userId}/cart/${book._id}`,{},{
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }).then(res =>{
         alert(res.data.message);
       })
     }catch(error){
