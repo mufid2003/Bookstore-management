@@ -3,6 +3,7 @@ const router = express.Router();
 const bookController = require('../controllers/bookController');
 const userController = require('../controllers/userController');
 const orderController = require('../controllers/orderController');
+const cartController = require('../controllers/cartController');
 
 
 // Route to list only one book
@@ -47,6 +48,7 @@ router.post('/login',userController.loginUser);
 
 
 
+
 // Route to find only one order
 router.get('/getoneorder/:id', orderController.getOneOrder);
 
@@ -63,4 +65,19 @@ router.put('/orders/:id', orderController.updateOrder);
 
 // Route to delete an order
 router.delete('/orders/:id', orderController.deleteOrder);
+
+
+
+
+//add item to cart
+router.post('/addtocart/:userId/cart/:bookId', cartController.addToCart);
+
+// Use the controller in your route
+router.get('/cart/:userId', cartController.getCartItems);
+
+router.put('/cart/:userId/:bookId', cartController.updateCartItemQuantity); // Use PUT for updating
+
+//delete item from cart
+router.delete('/cart/:userId/:bookId', cartController.deleteCartItem);
+
 module.exports = router;

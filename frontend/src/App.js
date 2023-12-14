@@ -7,6 +7,7 @@ import Employeepage from './pages/Employeepage';
 import Adminpage from './pages/Adminpage';
 import UpdateBook from './components/UpdateBook';
 import Addbook from './components/Addbook';
+import Viewcart from './pages/Viewcart';
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
           <Route path='/admin' element={<Adminpage />} />
           <Route path='/updatebook/:id' element={<UpdateBook/>}/>
           <Route path='addbook' element={<Addbook/>}/>
+          <Route path='/cart/:id' element={<Viewcart/>}/>
 
         </Routes>
       </BrowserRouter>
