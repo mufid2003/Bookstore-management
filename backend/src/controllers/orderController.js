@@ -27,18 +27,43 @@ exports.getOneOrder = async (req, res) => {
   }
 };
 
+// // Controller to add a new order
+// exports.addOrder = async (req, res) => {
+//   const {
+//     user_id,
+//     items,
+//     status
+//   } = req.body;
+
+//   const newOrder = new Order({
+//     user_id,
+//     items,
+//     status
+//   });
+
+//   try {
+//     const savedOrder = await newOrder.save();
+//     res.status(201).json(savedOrder);
+//   } catch (error) {
+//     res.status(400).json({ message: error.message });
+//   }
+// };
+
+
 // Controller to add a new order
 exports.addOrder = async (req, res) => {
-  const {
-    user_id,
-    items,
-    status
-  } = req.body;
+  const { user_id, items, status } = req.body;
+
+  // Calculate the amount based on the quantity and price of each book
+  const amount = items.reduce((totalAmount, item) => {
+    return totalAmount + item.quantity * item.price;
+  }, 0);
 
   const newOrder = new Order({
     user_id,
     items,
-    status
+    amount, // Add the calculated amount
+    status,
   });
 
   try {

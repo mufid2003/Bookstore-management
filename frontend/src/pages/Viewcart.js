@@ -65,10 +65,32 @@ export default function Viewcart() {
       }
     };
 
-    const handleOrder = () => {
+    const handleOrder = async () => {
       const isConfirmed = window.confirm('Are you sure you want to Place the order.');
         if(isConfirmed){
           console.log("Order Placed.")
+          console.log(cart);
+          try {
+            let userId = localStorage.getItem('user_id');
+            // Create the order payload based on the cartDetails state
+            const orderPayload = {
+              user_id: userId,
+              items: cart.map((item) => ({
+                book_id: item.bookDetails._id,
+                quantity: item.quantity,
+                price: item.bookDetails.price,
+              })),
+              status: 'pending',
+            };
+      
+            // Make a POST request to the add order API
+            const response = await axios.post(`${process.env.REACT_APP_API_URL}/orders`, orderPayload);
+      
+            // Assuming the API response includes the newly created order details
+            console.log('Order placed:', response.data);
+          } catch (error) {
+            console.error('Error placing order:', error);
+          }
         }
     }
 
