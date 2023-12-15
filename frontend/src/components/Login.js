@@ -68,6 +68,7 @@ function Login() {
             console.log('Login successful');
             const responseData = await response.json();
             localStorage.setItem('user_id',responseData.user._id);
+            localStorage.setItem('role',responseData.user.role);
             console.log(responseData);
             localStorage.setItem('token',responseData.token);
             if (responseData.user.role === 'customer') {
