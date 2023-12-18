@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import IconButton from '@mui/material/IconButton';
@@ -8,8 +8,17 @@ import MenuIcon from '@mui/icons-material/Menu';
 import { Link, useNavigate } from 'react-router-dom';
 
 const Header = () => {
-  const user_id = localStorage.getItem('user_id');
+  const [userName, setUserName] = useState(null);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    // Check if the user is logged in (based on token)
+    const userToken = localStorage.getItem('token');
+    if (userToken) {
+      const storedUserName = localStorage.getItem('username');
+      setUserName(storedUserName);
+    }
+  }, []);
 
   const handleLogout = () => {
     // Clear local storage
@@ -41,19 +50,33 @@ const Header = () => {
           Your Bookstore
         </Typography>
 
-        {/* Additional Options */}
-        <Button color="inherit" sx={{ color: 'white' }}>
-          Home
-        </Button>
-        <Button color="inherit" sx={{ color: 'white' }}>
-          Books
-        </Button>
-        <Button color="inherit" sx={{ color: 'white' }}>
-          Gallery
-        </Button>
+        {/* Display user name if logged in */}
+        {userName && (
+          <Typography variant="h6" sx={{ fontWeight: 'bold', color: 'white', marginRight: 10 }}>
+            Welcome, {userName}!
+          </Typography>
+        )}
+        {/* New button/link for Orders */}
+        {userName && (
+          <Link to="/orders" style={{ textDecoration: 'none' }}>
+            <Button
+              color="inherit"
+              sx={{
+                color: 'white',
+                borderRadius: 5,
+                padding: '10px 20px',
+                '&:hover': {
+                  backgroundColor: '#45a049',
+                },
+              }}
+            >
+              Orders
+            </Button>
+          </Link>
+        )}
 
         {/* Conditional rendering of Login/Logout buttons */}
-        {user_id ? (
+        {userName ? (
           <Button
             onClick={handleLogout}
             sx={{
@@ -61,7 +84,6 @@ const Header = () => {
               color: 'white',
               borderRadius: 5,
               padding: '10px 20px',
-              marginLeft: 10,
               '&:hover': {
                 backgroundColor: '#45a049',
               },
@@ -77,7 +99,6 @@ const Header = () => {
                 color: 'white',
                 borderRadius: 5,
                 padding: '10px 20px',
-                marginLeft: 10,
                 '&:hover': {
                   backgroundColor: '#45a049',
                 },

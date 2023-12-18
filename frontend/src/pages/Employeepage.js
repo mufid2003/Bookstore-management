@@ -11,7 +11,7 @@ export default function Employeepage() {
   const token = localStorage.getItem('token');
 
   useEffect(() => {
-    axios.get(`${process.env.REACT_APP_API_URL}/books`,{
+    axios.get(`${process.env.REACT_APP_API_URL}/books`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -32,7 +32,7 @@ export default function Employeepage() {
 
       if (isConfirmed) {
         // Implement your delete logic here
-        axios.delete(`${process.env.REACT_APP_API_URL}/books/${bookId}`,{
+        axios.delete(`${process.env.REACT_APP_API_URL}/books/${bookId}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },

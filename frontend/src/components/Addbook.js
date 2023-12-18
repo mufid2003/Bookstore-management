@@ -27,11 +27,11 @@ export default function Addbook() {
         // Pass the bookData to the parent component
         try {
             console.log(bookData);
-            const response = await axios.post(`${process.env.REACT_APP_API_URL}/books`, bookData,{
+            const response = await axios.post(`${process.env.REACT_APP_API_URL}/books`, bookData, {
                 headers: {
-                  Authorization: `Bearer ${token}`,
+                    Authorization: `Bearer ${token}`,
                 },
-              });
+            });
 
             if (response.status === 201) {
                 // Book added successfully, you can perform any additional actions here

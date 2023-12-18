@@ -21,13 +21,13 @@ export default function UpdateBook() {
 
   useEffect(() => {
     // Fetch book details using bookId
-    axios.get(`${process.env.REACT_APP_API_URL}/books/${id}`,{
+    axios.get(`${process.env.REACT_APP_API_URL}/books/${id}`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
     }).then((response) => {
-        setBook(response.data);
-      })
+      setBook(response.data);
+    })
       .catch((error) => {
         console.error('Error fetching book details:', error);
       });
@@ -39,11 +39,11 @@ export default function UpdateBook() {
       // Send updated book details to the server
       const response = await axios.put(
         `${process.env.REACT_APP_API_URL}/books/${id}`,
-        book,{
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
+        book, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
       );
 
       console.log('Book updated successfully:', response.data);

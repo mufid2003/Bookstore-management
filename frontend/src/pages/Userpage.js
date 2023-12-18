@@ -23,7 +23,7 @@ export default function Userpage() {
   };
 
   useEffect(() => {
-    axios.get(`${process.env.REACT_APP_API_URL}/books`,{
+    axios.get(`${process.env.REACT_APP_API_URL}/books`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -35,8 +35,8 @@ export default function Userpage() {
     })
   }, []);
 
-   // Function to handle search
-   const handleSearch = (term) => {
+  // Function to handle search
+  const handleSearch = (term) => {
     setSearchTerm(term);
     const filtered = books.filter(book =>
       book.title.toLowerCase().includes(term.toLowerCase()) ||
@@ -44,29 +44,29 @@ export default function Userpage() {
     );
     setFilteredBooks(filtered);
   };
-  
+
 
   // Function to handle adding a book to the cart
   const addToCart = (book) => {
     // Implement your logic to add the book to the cart
     let userId = localStorage.getItem('user_id');
 
-    try{
-      axios.post(`${process.env.REACT_APP_API_URL}/addtocart/${userId}/cart/${book._id}`,{},{
+    try {
+      axios.post(`${process.env.REACT_APP_API_URL}/addtocart/${userId}/cart/${book._id}`, {}, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
-      }).then(res =>{
+      }).then(res => {
         alert(res.data.message);
       })
-    }catch(error){
+    } catch (error) {
       console.error('Error deleting book:', error.message);
     }
   };
   return (
     <div>
-        {/* Search Bar */}
-        <Container>
+      {/* Search Bar */}
+      <Container>
         <TextField
           label="Search Books"
           variant="outlined"

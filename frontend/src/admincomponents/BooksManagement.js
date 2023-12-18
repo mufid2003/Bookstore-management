@@ -1,10 +1,10 @@
-import React, { useState , useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button, Typography, TextField, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Dialog, DialogTitle, DialogContent, DialogActions, IconButton, Snackbar } from '@mui/material';
 import { Delete as DeleteIcon } from '@mui/icons-material';
 import axios from 'axios';
 
 const BooksManagement = () => {
- 
+
   const token = localStorage.getItem('token');
   const [books, setBooks] = useState([]);
   const [openDialog, setOpenDialog] = useState(false);
@@ -21,7 +21,7 @@ const BooksManagement = () => {
   });
   useEffect(() => {
     // Fetch books from the API endpoint when the component mounts
-    axios.get(`${process.env.REACT_APP_API_URL}/books`,{
+    axios.get(`${process.env.REACT_APP_API_URL}/books`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -174,8 +174,8 @@ const BooksManagement = () => {
                   <Button variant="outlined" color="primary" onClick={() => handleOpenDialog(book)}>
                     Update
                   </Button>
-                  </TableCell>
-                  <TableCell>
+                </TableCell>
+                <TableCell>
                   <IconButton color="primary" onClick={() => handleDeleteBook(book._id)}>
                     <DeleteIcon />
                   </IconButton>

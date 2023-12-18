@@ -10,7 +10,7 @@ export default function Viewcart() {
   const [cart, setCart] = useState([]);
   const token = localStorage.getItem('token');
 
-  useEffect(() => {    
+  useEffect(() => {
     fetchCartDetails();
   }, [])
 
@@ -38,11 +38,11 @@ export default function Viewcart() {
 
     try {
       let userId = localStorage.getItem('user_id');
-      await axios.put(`${process.env.REACT_APP_API_URL}/cart/${userId}/${id}`, { qt: quant + change },{
+      await axios.put(`${process.env.REACT_APP_API_URL}/cart/${userId}/${id}`, { qt: quant + change }, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
-      }).then(res=>{
+      }).then(res => {
       });
 
       // Assuming the API response includes the updated cart details
@@ -52,68 +52,68 @@ export default function Viewcart() {
 
       // Handle errors here (e.g., show an error message to the user)
     }
-    };
+  };
 
-    //function to delete the book from cart
-    const handleDelete = async (bookId) => {
-      try {
-       
-        let userId = localStorage.getItem('user_id');
-  
-        const isConfirmed = window.confirm('Are you sure you want to delete this book from cart?');
-  
-        if (isConfirmed) {
-          // Implement your delete logic here
-          axios.delete(`${process.env.REACT_APP_API_URL}/cart/${userId}/${bookId}`,{
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }).then(res => {
-            alert('Book removed from cart successfully'); // You can replace this with your actual success message
-            setCart((prevBooks) => prevBooks.filter((book) => book.bookDetails._id !== bookId));
-          }).catch(e => {
-            console.log(e);
-          })
-  
-        }
-        // Simulate a delete by filtering out the deleted book from the local state
-      } catch (error) {
-        console.error('Error deleting book:', error.message);
+  //function to delete the book from cart
+  const handleDelete = async (bookId) => {
+    try {
+
+      let userId = localStorage.getItem('user_id');
+
+      const isConfirmed = window.confirm('Are you sure you want to delete this book from cart?');
+
+      if (isConfirmed) {
+        // Implement your delete logic here
+        axios.delete(`${process.env.REACT_APP_API_URL}/cart/${userId}/${bookId}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }).then(res => {
+          alert('Book removed from cart successfully'); // You can replace this with your actual success message
+          setCart((prevBooks) => prevBooks.filter((book) => book.bookDetails._id !== bookId));
+        }).catch(e => {
+          console.log(e);
+        })
+
       }
-    };
-
-    const handleOrder = async () => {
-      const isConfirmed = window.confirm('Are you sure you want to Place the order.');
-        if(isConfirmed){
-          console.log("Order Placed.")
-          console.log(cart);
-          try {
-            let userId = localStorage.getItem('user_id');
-            // Create the order payload based on the cartDetails state
-            const orderPayload = {
-              user_id: userId,
-              items: cart.map((item) => ({
-                book_id: item.bookDetails._id,
-                quantity: item.quantity,
-                price: item.bookDetails.price,
-              })),
-              status: 'pending',
-            };
-      
-            // Make a POST request to the add order API
-            const response = await axios.post(`${process.env.REACT_APP_API_URL}/orders`, orderPayload,{
-              headers: {
-                Authorization: `Bearer ${token}`,
-              },
-            });
-      
-            // Assuming the API response includes the newly created order details
-            console.log('Order placed:', response.data);
-          } catch (error) {
-            console.error('Error placing order:', error);
-          }
-        }
+      // Simulate a delete by filtering out the deleted book from the local state
+    } catch (error) {
+      console.error('Error deleting book:', error.message);
     }
+  };
+
+  const handleOrder = async () => {
+    const isConfirmed = window.confirm('Are you sure you want to Place the order.');
+    if (isConfirmed) {
+      console.log("Order Placed.")
+      console.log(cart);
+      try {
+        let userId = localStorage.getItem('user_id');
+        // Create the order payload based on the cartDetails state
+        const orderPayload = {
+          user_id: userId,
+          items: cart.map((item) => ({
+            book_id: item.bookDetails._id,
+            quantity: item.quantity,
+            price: item.bookDetails.price,
+          })),
+          status: 'pending',
+        };
+
+        // Make a POST request to the add order API
+        const response = await axios.post(`${process.env.REACT_APP_API_URL}/orders`, orderPayload, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        // Assuming the API response includes the newly created order details
+        console.log('Order placed:', response.data);
+      } catch (error) {
+        console.error('Error placing order:', error);
+      }
+    }
+  }
 
   return (
     <div>
@@ -129,27 +129,27 @@ export default function Viewcart() {
               <TableCell>Delete</TableCell>
             </TableRow>
           </TableHead>
-        
+
           <TableBody>
-          {cart.map((item) => (
-            <TableRow key={item.bookDetails._id}>
-              <TableCell>{item.bookDetails.title}</TableCell>
-              <TableCell>{item.bookDetails.author}</TableCell>
-              <TableCell>${item.bookDetails.price}</TableCell>
-              <TableCell>
-                <Button variant="outlined" onClick={() => handleQuantityChange(item.bookDetails._id, item.quantity, -1)}>-</Button>
-                {item.quantity}
-                <Button variant="outlined" onClick={() => handleQuantityChange(item.bookDetails._id, item.quantity,1)}>+</Button>
-              </TableCell>
-              <TableCell>${item.bookDetails.price * item.quantity}</TableCell>
-              <TableCell>
+            {cart.map((item) => (
+              <TableRow key={item.bookDetails._id}>
+                <TableCell>{item.bookDetails.title}</TableCell>
+                <TableCell>{item.bookDetails.author}</TableCell>
+                <TableCell>${item.bookDetails.price}</TableCell>
+                <TableCell>
+                  <Button variant="outlined" onClick={() => handleQuantityChange(item.bookDetails._id, item.quantity, -1)}>-</Button>
+                  {item.quantity}
+                  <Button variant="outlined" onClick={() => handleQuantityChange(item.bookDetails._id, item.quantity, 1)}>+</Button>
+                </TableCell>
+                <TableCell>${item.bookDetails.price * item.quantity}</TableCell>
+                <TableCell>
                   <IconButton onClick={() => handleDelete(item.bookDetails._id)} color="secondary">
                     <DeleteIcon />
                   </IconButton>
                 </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
+              </TableRow>
+            ))}
+          </TableBody>
         </Table>
       </TableContainer>
       <Container>

@@ -67,10 +67,10 @@ function Login() {
             // Login successful
             console.log('Login successful');
             const responseData = await response.json();
-            localStorage.setItem('user_id',responseData.user._id);
-            localStorage.setItem('role',responseData.user.role);
+            localStorage.setItem('user_id', responseData.user._id);
+            localStorage.setItem('username', responseData.user.username);
             console.log(responseData);
-            localStorage.setItem('token',responseData.token);
+            localStorage.setItem('token', responseData.token);
             if (responseData.user.role === 'customer') {
               navigate('/customer');
             } else if (responseData.user.role === 'employee') {

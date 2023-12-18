@@ -9,16 +9,16 @@ const verifyToken = require('./verifyToken');
 
 // Middleware to verify JWT token for all routes except login and register
 router.use((req, res, next) => {
-    const isLoginRoute = req.url === '/login';
-    const isUsersRoute = req.url.startsWith('/users') && req.method === 'POST';
-  
-    if (isLoginRoute || isUsersRoute) {
-      // Skip verification for login and /users with POST method
-      return next();
-    }
-  
-    verifyToken(req, res, next);
-  });
+  const isLoginRoute = req.url === '/login';
+  const isUsersRoute = req.url.startsWith('/users') && req.method === 'POST';
+
+  if (isLoginRoute || isUsersRoute) {
+    // Skip verification for login and /users with POST method
+    return next();
+  }
+
+  verifyToken(req, res, next);
+});
 // Route to list only one book
 router.get('/books/:id', bookController.getOneBook);
 // Route to list all books
@@ -56,7 +56,7 @@ router.put('/users/:id', userController.updateUser);
 router.delete('/users/:id', userController.deleteUser);
 
 //Route to login user
-router.post('/login',userController.loginUser);
+router.post('/login', userController.loginUser);
 
 
 

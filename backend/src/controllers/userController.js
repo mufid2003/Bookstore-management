@@ -62,44 +62,6 @@ exports.addUser = async (req, res) => {
   }
 };
 
-// // Controller to update a user
-// exports.updateUser = async (req, res) => {
-//   const { id } = req.params;
-//   const {
-//     name,
-//     username,
-//     password,
-//     email,
-//     role,
-//     cart,
-//     orders
-//   } = req.body;
-
-//   try {
-//     const updatedUser = await User.findByIdAndUpdate(
-//       id,
-//       {
-//         name,
-//         username,
-//         password,
-//         email,
-//         role,
-//         cart,
-//         orders
-//       },
-//       { new: true } // Return the updated document
-//     );
-
-//     if (!updatedUser) {
-//       return res.status(404).json({ message: 'User not found' });
-//     }
-
-//     res.json(updatedUser);
-//   } catch (error) {
-//     res.status(500).json({ message: error.message });
-//   }
-// };
-
 // Controller to update a user
 exports.updateUser = async (req, res) => {
   const { id } = req.params;
@@ -175,7 +137,7 @@ exports.loginUser = async (req, res) => {
     const token = jwt.sign(
       { userId: user._id, username: user.username, role: user.role },
       process.env.JWT_SECRET,
-      { expiresIn: '1h' } // Token expires in 1 hour
+      { expiresIn: '1d' } // Token expires in 1 hour
     );
 
     res.status(200).json({

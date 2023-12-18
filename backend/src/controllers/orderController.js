@@ -1,17 +1,7 @@
 const Order = require('../models/Order');
+const User = require('../models/User');
 
 // Controller to list all orders
-// exports.getAllOrders = async (req, res) => {
-//   try {
-//     const orders = await Order.find();
-//     res.json(orders);
-//   } catch (error) {
-//     res.status(500).json({ message: error.message });
-//   }
-// };
-
-// Controller to get all orders
-// Controller to get all orders with user and book details
 exports.getAllOrders = async (req, res) => {
   try {
     // Find all orders and populate the user and book details
@@ -35,24 +25,6 @@ exports.getAllOrders = async (req, res) => {
 };
 
 
-// Controller to find only one order
-//exports.getOneOrder = async (req, res) => {
-//   const { id } = req.params;
-
-//   try {
-//     const order = await Order.findById(id);
-    
-//     if (!order) {
-//       return res.status(404).json({ message: 'Order not found' });
-//     }
-
-//     res.json(order);
-//   } catch (error) {
-//     res.status(500).json({ message: error.message });
-//   }
-// };
-
-// Controller to get order details by order id
 // Controller to get order details by order id with user and book details
 exports.getOneOrder = async (req, res) => {
   const { id } = req.params;// Assuming you pass the orderId as a route parameter
@@ -79,30 +51,6 @@ exports.getOneOrder = async (req, res) => {
 };
 
 
-
-// // Controller to add a new order
-// exports.addOrder = async (req, res) => {
-//   const {
-//     user_id,
-//     items,
-//     status
-//   } = req.body;
-
-//   const newOrder = new Order({
-//     user_id,
-//     items,
-//     status
-//   });
-
-//   try {
-//     const savedOrder = await newOrder.save();
-//     res.status(201).json(savedOrder);
-//   } catch (error) {
-//     res.status(400).json({ message: error.message });
-//   }
-// };
-
-
 // Controller to add a new order
 exports.addOrder = async (req, res) => {
   const { user_id, items, status } = req.body;
@@ -121,6 +69,17 @@ exports.addOrder = async (req, res) => {
 
   try {
     const savedOrder = await newOrder.save();
+
+    // Update the user's order array in the User schema
+    await User.findByIdAndUpdate(user_id, {
+      $push: {
+        orders: {
+          order_id: savedOrder._id,
+          status: savedOrder.status,
+        },
+      },
+    });
+
     res.status(201).json(savedOrder);
   } catch (error) {
     res.status(400).json({ message: error.message });

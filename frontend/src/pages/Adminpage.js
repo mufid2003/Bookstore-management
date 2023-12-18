@@ -20,12 +20,14 @@ import DashboardIcon from '@mui/icons-material/Dashboard';
 import BookIcon from '@mui/icons-material/Book';
 import PersonIcon from '@mui/icons-material/Person';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
+import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 
 // Import your custom components here
 import DashboardContent from '../admincomponents/DashboardContent';
 import BooksManagement from '../admincomponents/BooksManagement';
 import UserManagement from '../admincomponents/UserManagement';
 import OrderManagement from '../admincomponents/OrderManagement';
+import { useNavigate } from 'react-router-dom';
 
 const drawerWidth = 240;
 
@@ -98,7 +100,7 @@ export default function Adminpage() {
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
   const [selectedOption, setSelectedOption] = React.useState('dashboard');
-
+  const navigate = useNavigate();
   const handleDrawerOpen = () => {
     setOpen(true);
   };
@@ -109,6 +111,13 @@ export default function Adminpage() {
 
   const handleMenuItemClick = (option) => {
     setSelectedOption(option);
+  };
+  const handleLogout = () => {
+    // Clear local storage
+    localStorage.removeItem('user_id');
+    localStorage.removeItem('token');
+    // Redirect to login page
+    navigate('/login');
   };
 
   const renderContent = () => {
@@ -238,6 +247,25 @@ export default function Adminpage() {
               <ShoppingCartIcon />
             </ListItemIcon>
             <ListItemText primary="Order Management" sx={{ opacity: open ? 1 : 0 }} />
+          </ListItemButton>
+          <ListItemButton
+            onClick={handleLogout}
+            sx={{
+              minHeight: 48,
+              justifyContent: open ? 'initial' : 'center',
+              px: 2.5,
+            }}
+          >
+            <ListItemIcon
+              sx={{
+                minWidth: 0,
+                mr: open ? 3 : 'auto',
+                justifyContent: 'center',
+              }}
+            >
+              <ExitToAppIcon />
+            </ListItemIcon>
+            <ListItemText primary="Logout" sx={{ opacity: open ? 1 : 0 }} />
           </ListItemButton>
         </List>
       </Drawer>
