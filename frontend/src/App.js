@@ -7,6 +7,8 @@ import Employeepage from './pages/Employeepage';
 import UpdateBook from './components/UpdateBook';
 import Addbook from './components/Addbook';
 import Viewcart from './pages/Viewcart';
+import Adminpage from './pages/Adminpage';
+import OrderDetailspage from './pages/OrderDetailspage';
 
 
 
@@ -24,6 +26,8 @@ function App() {
           <Route path='/updatebook/:id' element={<UpdateBook />} />
           <Route path='addbook' element={<Addbook />} />
           <Route path='/cart/:id' element={<Viewcart />} />
+          <Route path='/admin' element={<Adminpage/>}/>
+          <Route path='/orders' element={<OrderDetailspage/>}/>
         </Routes>
       </BrowserRouter>
 

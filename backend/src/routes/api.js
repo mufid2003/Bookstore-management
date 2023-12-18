@@ -79,7 +79,8 @@ router.put('/orders/:id', orderController.updateOrder);
 // Route to delete an order
 router.delete('/orders/:id', orderController.deleteOrder);
 
-
+//route to get all the order done by user
+router.get('/getorderbyuser/:userId', orderController.getAllOrdersByUser);
 
 
 //add item to cart

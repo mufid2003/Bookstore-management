@@ -62,43 +62,81 @@ exports.addUser = async (req, res) => {
   }
 };
 
+// // Controller to update a user
+// exports.updateUser = async (req, res) => {
+//   const { id } = req.params;
+//   const {
+//     name,
+//     username,
+//     password,
+//     email,
+//     role,
+//     cart,
+//     orders
+//   } = req.body;
+
+//   try {
+//     const updatedUser = await User.findByIdAndUpdate(
+//       id,
+//       {
+//         name,
+//         username,
+//         password,
+//         email,
+//         role,
+//         cart,
+//         orders
+//       },
+//       { new: true } // Return the updated document
+//     );
+
+//     if (!updatedUser) {
+//       return res.status(404).json({ message: 'User not found' });
+//     }
+
+//     res.json(updatedUser);
+//   } catch (error) {
+//     res.status(500).json({ message: error.message });
+//   }
+// };
+
 // Controller to update a user
 exports.updateUser = async (req, res) => {
   const { id } = req.params;
+
+  // Extract only the fields you want to update
   const {
     name,
     username,
     password,
     email,
     role,
-    cart,
-    orders
   } = req.body;
 
   try {
-    const updatedUser = await User.findByIdAndUpdate(
-      id,
-      {
-        name,
-        username,
-        password,
-        email,
-        role,
-        cart,
-        orders
-      },
-      { new: true } // Return the updated document
-    );
+    // Find the existing user
+    const existingUser = await User.findById(id);
 
-    if (!updatedUser) {
+    if (!existingUser) {
       return res.status(404).json({ message: 'User not found' });
     }
+
+    // Update only the specified fields
+    existingUser.name = name || existingUser.name;
+    existingUser.username = username || existingUser.username;
+    existingUser.password = password || existingUser.password;
+    existingUser.email = email || existingUser.email;
+    existingUser.role = role || existingUser.role;
+
+    // Save the updated user
+    const updatedUser = await existingUser.save();
 
     res.json(updatedUser);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
+
 
 // Controller to delete a user
 exports.deleteUser = async (req, res) => {
