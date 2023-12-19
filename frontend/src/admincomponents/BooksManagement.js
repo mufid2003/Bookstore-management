@@ -1,15 +1,39 @@
 import React, { useState, useEffect } from 'react';
-import { Button, Typography, TextField, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Dialog, DialogTitle, DialogContent, DialogActions, IconButton, Snackbar } from '@mui/material';
+import {
+  Button,
+  Typography,
+  TextField,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  IconButton,
+  Snackbar,
+  styled
+} from '@mui/material';
 import { Delete as DeleteIcon } from '@mui/icons-material';
 import axios from 'axios';
 
-const BooksManagement = () => {
 
+const StyledTableContainer = styled(TableContainer)(({ theme }) => ({
+  marginTop: theme.spacing(3),
+}));
+
+
+const BooksManagement = () => {
   const token = localStorage.getItem('token');
   const [books, setBooks] = useState([]);
   const [openDialog, setOpenDialog] = useState(false);
   const [editingBook, setEditingBook] = useState(null);
   const [openSnackbar, setOpenSnackbar] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState('');
   const [formValues, setFormValues] = useState({
     title: '',
     author: '',
@@ -19,6 +43,7 @@ const BooksManagement = () => {
     price: '',
     description: '',
   });
+
   useEffect(() => {
     // Fetch books from the API endpoint when the component mounts
     axios.get(`${process.env.REACT_APP_API_URL}/books`, {
@@ -29,6 +54,7 @@ const BooksManagement = () => {
       .then(response => setBooks(response.data))
       .catch(error => console.error('Error fetching books:', error));
   }, []);
+
   const handleOpenDialog = (book) => {
     setEditingBook(book);
     setFormValues({
@@ -72,6 +98,7 @@ const BooksManagement = () => {
         setBooks(updatedBooks);
 
         // Show success alert
+        setSnackbarMessage('Book Updated Successfully');
         setOpenSnackbar(true);
 
         handleCloseDialog();
@@ -91,12 +118,14 @@ const BooksManagement = () => {
         setBooks([...books, response.data]);
 
         // Show success alert
+        setSnackbarMessage('Book Added Successfully');
         setOpenSnackbar(true);
 
         handleCloseDialog();
       })
       .catch(error => console.error('Error adding book:', error));
   };
+
   const handleDeleteBook = (bookId) => {
     const isConfirmed = window.confirm('Are you sure you want to delete this book?');
 
@@ -117,6 +146,7 @@ const BooksManagement = () => {
           setBooks(updatedBooks);
 
           // Show success alert
+          setSnackbarMessage('Book Deleted Successfully');
           setOpenSnackbar(true);
         } else {
           console.error('Error deleting book:', response.status);
@@ -124,7 +154,6 @@ const BooksManagement = () => {
       })
       .catch(error => console.error('Error deleting book:', error));
   };
-
 
   const handleFormChange = (event) => {
     const { id, value } = event.target;
@@ -145,8 +174,8 @@ const BooksManagement = () => {
         Add Book
       </Button>
 
-      <TableContainer component={Paper} style={{ marginTop: '20px' }}>
-        <Table>
+      <StyledTableContainer component={Paper}>
+        <Table style={{ marginTop: '20px', borderCollapse: 'separate', borderSpacing: '0 10px' }}>
           <TableHead>
             <TableRow>
               <TableCell>Title</TableCell>
@@ -171,9 +200,28 @@ const BooksManagement = () => {
                 <TableCell>{book.price}</TableCell>
                 <TableCell>{book.description}</TableCell>
                 <TableCell>
-                  <Button variant="outlined" color="primary" onClick={() => handleOpenDialog(book)}>
+                  <Button
+                    style={{
+                      backgroundColor: '#1976D2', // Blue color, you can customize this
+                      color: '#fff', // White text color
+                      border: 'none',
+                      borderRadius: '4px', // Rounded corners
+                      padding: '8px 16px', // Adjust padding as needed
+                      cursor: 'pointer',
+                      fontSize: '14px',
+                      fontWeight: 'bold',
+                      transition: 'background-color 0.3s ease-in-out',
+                      textDecoration: 'none',
+                      '&:hover': {
+                        backgroundColor: '#1565C0', // Darker blue color on hover, you can customize this
+                      },
+                    }}
+                    onClick={() => handleOpenDialog(book)}
+                  >
                     Update
                   </Button>
+
+
                 </TableCell>
                 <TableCell>
                   <IconButton color="primary" onClick={() => handleDeleteBook(book._id)}>
@@ -184,7 +232,7 @@ const BooksManagement = () => {
             ))}
           </TableBody>
         </Table>
-      </TableContainer>
+      </StyledTableContainer>
 
       <Dialog open={openDialog} onClose={handleCloseDialog}>
         <DialogTitle>{editingBook ? 'Update Book' : 'Add Book'}</DialogTitle>
@@ -211,7 +259,7 @@ const BooksManagement = () => {
         open={openSnackbar}
         autoHideDuration={3000}
         onClose={handleSnackbarClose}
-        message="Book Updated/Added Successfully"
+        message={snackbarMessage}
         action={<Button color="inherit" size="small" onClick={handleSnackbarClose}>Close</Button>}
       />
     </div>

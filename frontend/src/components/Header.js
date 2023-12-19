@@ -9,6 +9,7 @@ import { Link, useNavigate } from 'react-router-dom';
 
 const Header = () => {
   const [userName, setUserName] = useState(null);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -17,6 +18,9 @@ const Header = () => {
     if (userToken) {
       const storedUserName = localStorage.getItem('username');
       setUserName(storedUserName);
+      setIsLoggedIn(true);
+    } else {
+      setIsLoggedIn(false);
     }
   }, []);
 
@@ -24,6 +28,8 @@ const Header = () => {
     // Clear local storage
     localStorage.removeItem('user_id');
     localStorage.removeItem('token');
+    // Update state to reflect the user is logged out
+    setIsLoggedIn(false);
     // Redirect to login page
     navigate('/login');
   };
@@ -51,13 +57,14 @@ const Header = () => {
         </Typography>
 
         {/* Display user name if logged in */}
-        {userName && (
+        {isLoggedIn && (
           <Typography variant="h6" sx={{ fontWeight: 'bold', color: 'white', marginRight: 10 }}>
             Welcome, {userName}!
           </Typography>
         )}
+
         {/* New button/link for Orders */}
-        {userName && (
+        {isLoggedIn && (
           <Link to="/orders" style={{ textDecoration: 'none' }}>
             <Button
               color="inherit"
@@ -76,7 +83,7 @@ const Header = () => {
         )}
 
         {/* Conditional rendering of Login/Logout buttons */}
-        {userName ? (
+        {isLoggedIn ? (
           <Button
             onClick={handleLogout}
             sx={{

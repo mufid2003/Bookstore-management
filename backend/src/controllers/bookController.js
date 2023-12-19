@@ -92,7 +92,7 @@ exports.updateBook = async (req, res) => {
       return res.status(404).json({ message: 'Book not found' });
     }
 
-    res.json(updatedBook);
+    res.status(200).json(updatedBook);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

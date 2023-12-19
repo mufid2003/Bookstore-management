@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react'
-import { Button, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
+import { Button, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Tooltip } from '@mui/material';
 import IconButton from '@mui/material/IconButton';
 import DeleteIcon from '@mui/icons-material/Delete';
 import axios from 'axios';
+import UpdateIcon from '@mui/icons-material/Update';
 import { Link } from 'react-router-dom'
 
 
@@ -51,48 +52,60 @@ export default function Employeepage() {
     }
   };
   return (
-    <div>
-      <Link to='/addbook'>
+    <div style={{ margin: '20px' }}>
+      <Link to="/addbook">
         <Button variant="contained" color="success">
           Add Book
         </Button>
       </Link>
-      <TableContainer component={Paper}>
+      <TableContainer component={Paper} style={{ marginTop: '20px' }}>
         <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>Title</TableCell>
-              <TableCell>Author</TableCell>
-              <TableCell>Genre</TableCell>
-              <TableCell>ISBN</TableCell>
-              <TableCell>Quantity</TableCell>
-              <TableCell>Price</TableCell>
-              <TableCell>Description</TableCell>
-              <TableCell>Update</TableCell>
-              <TableCell>Delete</TableCell>
-            </TableRow>
-          </TableHead>
+        <TableHead>
+  <TableRow style={{ backgroundColor: '#2196f3', color: 'white' }}>
+    <TableCell style={{ fontWeight: 'bold' }}>Title</TableCell>
+    <TableCell style={{ fontWeight: 'bold' }}>Author</TableCell>
+    <TableCell style={{ fontWeight: 'bold' }}>Genre</TableCell>
+    <TableCell style={{ fontWeight: 'bold' }}>ISBN</TableCell>
+    <TableCell style={{ fontWeight: 'bold' }}>Quantity</TableCell>
+    <TableCell style={{ fontWeight: 'bold' }}>Price</TableCell>
+    <TableCell style={{ fontWeight: 'bold' }}>Description</TableCell>
+    <TableCell style={{ fontWeight: 'bold' }}>Update</TableCell>
+    <TableCell style={{ fontWeight: 'bold' }}>Delete</TableCell>
+  </TableRow>
+</TableHead>
+
           <TableBody>
             {books.map((book) => (
-              <TableRow key={book._id}>
+              <TableRow
+                key={book._id}
+                sx={{
+                  '&:hover': {
+                    backgroundColor: '#e1f5fe', // Light blue color on hover
+                  },
+                }}
+              >
                 <TableCell>{book.title}</TableCell>
                 <TableCell>{book.author}</TableCell>
                 <TableCell>{book.genre}</TableCell>
                 <TableCell>{book.ISBN}</TableCell>
                 <TableCell>{book.quantity}</TableCell>
-                <TableCell>{book.price}</TableCell>
+                <TableCell>${book.price}</TableCell>
                 <TableCell>{book.description}</TableCell>
                 <TableCell>
                   <Link to={`/updatebook/${book._id}`}>
-                    <Button variant="contained" color="primary">
-                      Update
-                    </Button>
+                    <Tooltip title="Update" arrow>
+                      <IconButton color="primary">
+                        <UpdateIcon />
+                      </IconButton>
+                    </Tooltip>
                   </Link>
                 </TableCell>
                 <TableCell>
-                  <IconButton onClick={() => handleDelete(book._id)} color="secondary">
-                    <DeleteIcon />
-                  </IconButton>
+                  <Tooltip title="Delete" arrow>
+                    <IconButton onClick={() => handleDelete(book._id)} color="secondary">
+                      <DeleteIcon />
+                    </IconButton>
+                  </Tooltip>
                 </TableCell>
               </TableRow>
             ))}

@@ -1,19 +1,35 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom';
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, Container } from '@mui/material';
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, Container, Typography } from '@mui/material';
 import IconButton from '@mui/material/IconButton';
 import DeleteIcon from '@mui/icons-material/Delete';
+import AddIcon from '@mui/icons-material/Add';
+import RemoveIcon from '@mui/icons-material/Remove';
+import { useNavigate } from 'react-router-dom';
+import Snackbar from '@mui/material/Snackbar';
+import MuiAlert from '@mui/material/Alert';
 
 export default function Viewcart() {
   const { id } = useParams();
   const [cart, setCart] = useState([]);
   const token = localStorage.getItem('token');
+  const navigate = useNavigate();
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
 
   useEffect(() => {
     fetchCartDetails();
   }, [])
 
+  const handleCloseSnackbar = () => {
+    setSnackbarOpen(false);
+    // Navigate to /orders
+    navigate('/orders');
+  };
+
+  const calculateTotalAmount = () => {
+    return cart.reduce((total, item) => total + item.bookDetails.price * item.quantity, 0);
+  };
 
   const fetchCartDetails = async () => {
     try {
@@ -85,8 +101,6 @@ export default function Viewcart() {
   const handleOrder = async () => {
     const isConfirmed = window.confirm('Are you sure you want to Place the order.');
     if (isConfirmed) {
-      console.log("Order Placed.")
-      console.log(cart);
       try {
         let userId = localStorage.getItem('user_id');
         // Create the order payload based on the cartDetails state
@@ -106,7 +120,9 @@ export default function Viewcart() {
             Authorization: `Bearer ${token}`,
           },
         });
-
+        if(response.status===201){
+          setSnackbarOpen(true);
+        }
         // Assuming the API response includes the newly created order details
         console.log('Order placed:', response.data);
       } catch (error) {
@@ -117,47 +133,84 @@ export default function Viewcart() {
 
   return (
     <div>
-      <TableContainer component={Paper}>
-        <Table>
+      <TableContainer component={Paper} style={{ margin: '20px auto', borderRadius: '10px', boxShadow: '0 0 10px rgba(0,0,0,0.1)', maxWidth: '1000px' }}>
+        <Table style={{ minWidth: '650px', borderCollapse: 'separate', borderSpacing: '0 15px' }}>
           <TableHead>
-            <TableRow>
-              <TableCell>Title</TableCell>
-              <TableCell>Author</TableCell>
-              <TableCell>Price</TableCell>
-              <TableCell>Quantity</TableCell>
-              <TableCell>Total</TableCell>
-              <TableCell>Delete</TableCell>
+            <TableRow style={{ backgroundColor: '#f5f5f5' }}>
+              <TableCell style={{ fontWeight: 'bold', color: '#333' }}>Title</TableCell>
+              <TableCell style={{ fontWeight: 'bold', color: '#333' }}>Author</TableCell>
+              <TableCell style={{ fontWeight: 'bold', color: '#333' }}>Price</TableCell>
+              <TableCell style={{ fontWeight: 'bold', color: '#333' }}>Quantity</TableCell>
+              <TableCell style={{ fontWeight: 'bold', color: '#333' }}>Total</TableCell>
+              <TableCell style={{ fontWeight: 'bold', color: '#333' }}>Delete</TableCell>
             </TableRow>
           </TableHead>
 
           <TableBody>
-            {cart.map((item) => (
-              <TableRow key={item.bookDetails._id}>
+            {cart.map((item, index) => (
+              <TableRow key={item.bookDetails._id} style={{ backgroundColor: index % 2 === 0 ? '#f9f9f9' : 'white' }}>
                 <TableCell>{item.bookDetails.title}</TableCell>
                 <TableCell>{item.bookDetails.author}</TableCell>
                 <TableCell>${item.bookDetails.price}</TableCell>
-                <TableCell>
-                  <Button variant="outlined" onClick={() => handleQuantityChange(item.bookDetails._id, item.quantity, -1)}>-</Button>
-                  {item.quantity}
-                  <Button variant="outlined" onClick={() => handleQuantityChange(item.bookDetails._id, item.quantity, 1)}>+</Button>
+                <TableCell style={{ display: 'flex', alignItems: 'center' }}>
+                  <IconButton
+                    onClick={() => handleQuantityChange(item.bookDetails._id, item.quantity, -1)}
+                    style={{ backgroundColor: '#FFCDD2', marginRight: '8px', padding: '8px', borderRadius: '4px' }}
+                  >
+                    <RemoveIcon style={{ color: '#E57373' }} />
+                  </IconButton>
+                  <Typography variant="body1" component="span" style={{ fontWeight: 'bold', color: '#333', margin: '10px 5px' }}>
+                    {item.quantity}
+                  </Typography>
+                  <IconButton
+                    onClick={() => handleQuantityChange(item.bookDetails._id, item.quantity, 1)}
+                    style={{ backgroundColor: '#C8E6C9', marginLeft: '8px', padding: '8px', borderRadius: '4px' }}
+                  >
+                    <AddIcon style={{ color: '#81C784' }} />
+                  </IconButton>
                 </TableCell>
-                <TableCell>${item.bookDetails.price * item.quantity}</TableCell>
+
+                <TableCell style={{ color: '#333' }}>${item.bookDetails.price * item.quantity}</TableCell>
                 <TableCell>
                   <IconButton onClick={() => handleDelete(item.bookDetails._id)} color="secondary">
-                    <DeleteIcon />
+                    <DeleteIcon style={{ color: '#757575' }} />
                   </IconButton>
                 </TableCell>
               </TableRow>
             ))}
           </TableBody>
         </Table>
+
       </TableContainer>
-      <Container>
-        <Button variant="contained" color="primary" fullWidth onClick={handleOrder}>
+
+      {/* Total Amount */}
+      <Container style={{ padding: '20px', textAlign: 'right' }}>
+        <Typography variant="h6" style={{ fontWeight: 'bold' }}>
+          Total Amount: ${calculateTotalAmount()}
+        </Typography>
+      </Container>
+
+      <Container style={{ textAlign: 'center', marginBottom: '20px' }}>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={handleOrder}
+          style={{ marginTop: '20px', padding: '10px 30px' }}
+        >
           Place Order
         </Button>
       </Container>
 
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={6000}
+        onClose={handleCloseSnackbar}
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+      >
+        <MuiAlert onClose={handleCloseSnackbar} severity="success" sx={{ width: '100%' }}>
+          Order placed successfully.
+        </MuiAlert>
+      </Snackbar>
     </div>
   )
 }

@@ -1,7 +1,18 @@
 import React, { useState } from 'react';
-import TextField from '@mui/material/TextField';
-import Button from '@mui/material/Button';
+import { TextField, Button, Typography, Container, Grid, styled, Snackbar, Alert } from '@mui/material';
 import axios from 'axios';
+
+
+// Custom styled button with enhanced styling
+const AddBookButton = styled(Button)(({ theme }) => ({
+    marginTop: theme.spacing(2), // Adjust the top margin as needed
+    backgroundColor: theme.palette.success.main,
+    color: theme.palette.common.white,
+    '&:hover': {
+        backgroundColor: theme.palette.success.dark,
+    },
+}));
+
 
 export default function Addbook() {
     const [bookData, setBookData] = useState({
@@ -16,9 +27,15 @@ export default function Addbook() {
     });
 
     const token = localStorage.getItem('token');
+    const [snackbarOpen, setSnackbarOpen] = useState(false);
+    const [snackbarMessage, setSnackbarMessage] = useState('');
 
     const handleInputChange = (field) => (event) => {
         setBookData({ ...bookData, [field]: event.target.value });
+    };
+
+    const handleSnackbarClose = () => {
+        setSnackbarOpen(false);
     };
 
     const handleAddBook = async () => {
@@ -26,7 +43,6 @@ export default function Addbook() {
 
         // Pass the bookData to the parent component
         try {
-            console.log(bookData);
             const response = await axios.post(`${process.env.REACT_APP_API_URL}/books`, bookData, {
                 headers: {
                     Authorization: `Bearer ${token}`,
@@ -34,8 +50,10 @@ export default function Addbook() {
             });
 
             if (response.status === 201) {
-                // Book added successfully, you can perform any additional actions here
+                // Book added successfully
                 console.log('Book added successfully');
+                setSnackbarMessage('Book added successfully!');
+                setSnackbarOpen(true);
                 // Clear the form after adding the book
                 setBookData({
                     title: '',
@@ -53,104 +71,111 @@ export default function Addbook() {
         }
     };
     return (
-        <div>
+        <Container component="div" maxWidth="md" sx={{ marginTop: '40px' }}>
+            <Typography variant="h4" component="h2" sx={{ marginBottom: '20px' }}>
+                Add New Book
+            </Typography>
             <form>
-                <div style={{ marginBottom: '16px' }}>
-                    <label>Title:</label>
-                    <TextField
-                        id="title"
-                        label="Title"
-                        variant="filled"
-                        value={bookData.title}
-                        onChange={handleInputChange('title')}
-                    />
-                </div>
-
-                <div style={{ marginBottom: '16px' }}>
-                    <label>Author:</label>
-                    <TextField
-                        id="author"
-                        label="Author"
-                        variant="filled"
-                        value={bookData.author}
-                        onChange={handleInputChange('author')}
-                    />
-                </div>
-
-                <div style={{ marginBottom: '16px' }}>
-                    <label>Genre:</label>
-                    <TextField
-                        id="genre"
-                        label="Genre"
-                        variant="filled"
-                        value={bookData.genre}
-                        onChange={handleInputChange('genre')}
-                    />
-                </div>
-
-                <div style={{ marginBottom: '16px' }}>
-                    <label>ISBN:</label>
-                    <TextField
-                        id="ISBN"
-                        label="ISBN"
-                        variant="filled"
-                        value={bookData.ISBN}
-                        onChange={handleInputChange('ISBN')}
-                    />
-                </div>
-
-                <div style={{ marginBottom: '16px' }}>
-                    <label>Quantity:</label>
-                    <TextField
-                        id="quantity"
-                        label="Quantity"
-                        variant="filled"
-                        value={bookData.quantity}
-                        onChange={handleInputChange('quantity')}
-                    />
-                </div>
-
-                <div style={{ marginBottom: '16px' }}>
-                    <label>Price:</label>
-                    <TextField
-                        id="price"
-                        label="Price"
-                        variant="filled"
-                        value={bookData.price}
-                        onChange={handleInputChange('price')}
-                    />
-                </div>
-
-                <div style={{ marginBottom: '16px' }}>
-                    <label>Description:</label>
-                    <TextField
-                        id="description"
-                        label="Description"
-                        variant="filled"
-                        multiline
-                        rows={4}
-                        value={bookData.description}
-                        onChange={handleInputChange('description')}
-                    />
-                </div>
-
-                <div style={{ marginBottom: '16px' }}>
-                    <label>Publish Date:</label>
-                    <TextField
-                        id="publishDate"
-                        label="Publish Date"
-                        variant="filled"
-                        type="date"
-                        value={bookData.publishDate}
-                        onChange={handleInputChange('publishDate')}
-                    />
-                </div>
-
-                <Button variant="contained" color="primary" onClick={handleAddBook}>
+                <Grid container spacing={2}>
+                    <Grid item xs={12} sm={6}>
+                        <TextField
+                            id="title"
+                            label="Title"
+                            variant="filled"
+                            fullWidth
+                            value={bookData.title}
+                            onChange={handleInputChange('title')}
+                        />
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                        <TextField
+                            id="author"
+                            label="Author"
+                            variant="filled"
+                            fullWidth
+                            value={bookData.author}
+                            onChange={handleInputChange('author')}
+                        />
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                        <TextField
+                            id="genre"
+                            label="Genre"
+                            variant="filled"
+                            fullWidth
+                            value={bookData.genre}
+                            onChange={handleInputChange('genre')}
+                        />
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                        <TextField
+                            id="ISBN"
+                            label="ISBN"
+                            variant="filled"
+                            fullWidth
+                            value={bookData.ISBN}
+                            onChange={handleInputChange('ISBN')}
+                        />
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                        <TextField
+                            id="quantity"
+                            label="Quantity"
+                            variant="filled"
+                            fullWidth
+                            type="number"
+                            value={bookData.quantity}
+                            onChange={handleInputChange('quantity')}
+                        />
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                        <TextField
+                            id="price"
+                            label="Price"
+                            variant="filled"
+                            fullWidth
+                            type="number"
+                            value={bookData.price}
+                            onChange={handleInputChange('price')}
+                        />
+                    </Grid>
+                    <Grid item xs={12}>
+                        <TextField
+                            id="description"
+                            label="Description"
+                            variant="filled"
+                            multiline
+                            rows={4}
+                            fullWidth
+                            value={bookData.description}
+                            onChange={handleInputChange('description')}
+                        />
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                        <TextField
+                            id="publishDate"
+                            label="Publish Date"
+                            variant="filled"
+                            type="date"
+                            fullWidth
+                            value={bookData.publishDate}
+                            onChange={handleInputChange('publishDate')}
+                        />
+                    </Grid>
+                </Grid>
+                <AddBookButton variant="contained" onClick={handleAddBook}>
                     Add Book
-                </Button>
+                </AddBookButton>
             </form>
-
-        </div>
-    )
+            <Snackbar
+                open={snackbarOpen}
+                autoHideDuration={6000}
+                onClose={handleSnackbarClose}
+                anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+            >
+                <Alert onClose={handleSnackbarClose} severity="success" sx={{ width: '100%' }}>
+                    {snackbarMessage}
+                </Alert>
+            </Snackbar>
+        </Container>)
 }

@@ -9,6 +9,7 @@ import Addbook from './components/Addbook';
 import Viewcart from './pages/Viewcart';
 import Adminpage from './pages/Adminpage';
 import OrderDetailspage from './pages/OrderDetailspage';
+import Landingpage from './pages/Landingpage';
 
 
 
@@ -19,6 +20,7 @@ function App() {
       <BrowserRouter>
         <Header />
         <Routes>
+          <Route path='/' element={<Landingpage/>}/>
           <Route path='/login' element={<Login />} />
           <Route path='/customer' element={<Customerpage />} />
           <Route path='/employee' element={<Employeepage />} />
