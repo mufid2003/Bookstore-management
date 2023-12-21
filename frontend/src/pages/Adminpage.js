@@ -116,6 +116,10 @@ export default function Adminpage() {
     // Clear local storage
     localStorage.removeItem('user_id');
     localStorage.removeItem('token');
+    localStorage.removeItem('role');
+    localStorage.removeItem('username');
+    // Update state to reflect the user is logged out
+ 
     // Redirect to login page
     navigate('/login');
   };

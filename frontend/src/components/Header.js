@@ -5,29 +5,47 @@ import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import MenuIcon from '@mui/icons-material/Menu';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 
 const Header = () => {
   const [userName, setUserName] = useState(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [role, setRole] = useState(null);
   const navigate = useNavigate();
+  const location = useLocation();
 
-  useEffect(() => {
-    // Check if the user is logged in (based on token)
+  const updateUserInfo = () => {
     const userToken = localStorage.getItem('token');
     if (userToken) {
       const storedUserName = localStorage.getItem('username');
+      const storedRole = localStorage.getItem('role');
       setUserName(storedUserName);
+      setRole(storedRole);
       setIsLoggedIn(true);
     } else {
       setIsLoggedIn(false);
     }
+  };
+  useEffect(() => {
+    updateUserInfo();
   }, []);
+
+
+  // Use useEffect to listen for changes in the route
+  useEffect(() => {
+    // Check if the user is logged in when the route changes
+    updateUserInfo();
+    if(role === 'admin'){
+      navigate('/admin');
+    }
+  }, [location.pathname]);
 
   const handleLogout = () => {
     // Clear local storage
     localStorage.removeItem('user_id');
     localStorage.removeItem('token');
+    localStorage.removeItem('role');
+    localStorage.removeItem('username');
     // Update state to reflect the user is logged out
     setIsLoggedIn(false);
     // Redirect to login page
@@ -64,22 +82,93 @@ const Header = () => {
         )}
 
         {/* New button/link for Orders */}
-        {isLoggedIn && (
-          <Link to="/orders" style={{ textDecoration: 'none' }}>
-            <Button
-              color="inherit"
-              sx={{
-                color: 'white',
-                borderRadius: 5,
-                padding: '10px 20px',
-                '&:hover': {
-                  backgroundColor: '#45a049',
-                },
-              }}
-            >
-              Orders
-            </Button>
-          </Link>
+        {isLoggedIn && (role === 'customer') && (
+          <div>
+            <Link to="/" style={{ textDecoration: 'none' }}>
+              <Button
+                color="inherit"
+                sx={{
+                  color: 'white',
+                  borderRadius: 5,
+                  padding: '10px 20px',
+                  '&:hover': {
+                    backgroundColor: '#45a049',
+                  },
+                }}
+              >
+                Home
+              </Button>
+              <Link to="/customer" style={{ textDecoration: 'none' }}>
+                <Button
+                  color="inherit"
+                  sx={{
+                    color: 'white',
+                    borderRadius: 5,
+                    padding: '10px 20px',
+                    '&:hover': {
+                      backgroundColor: '#45a049',
+                    },
+                  }}
+                >
+                  Books
+                </Button>
+              </Link>
+            </Link>
+            <Link to="/orders" style={{ textDecoration: 'none' }}>
+              <Button
+                color="inherit"
+                sx={{
+                  color: 'white',
+                  borderRadius: 5,
+                  padding: '10px 20px',
+                  '&:hover': {
+                    backgroundColor: '#45a049',
+                  },
+                }}
+              >
+                Orders
+              </Button>
+            </Link>
+          </div>
+
+        )}
+
+        {/*options for employee*/}
+        {/* New button/link for Orders */}
+        {isLoggedIn && (role === 'employee') && (
+          <div>
+            <Link to="/" style={{ textDecoration: 'none' }}>
+              <Button
+                color="inherit"
+                sx={{
+                  color: 'white',
+                  borderRadius: 5,
+                  padding: '10px 20px',
+                  '&:hover': {
+                    backgroundColor: '#45a049',
+                  },
+                }}
+              >
+                Home
+              </Button>
+              <Link to="/employee" style={{ textDecoration: 'none' }}>
+                <Button
+                  color="inherit"
+                  sx={{
+                    color: 'white',
+                    borderRadius: 5,
+                    padding: '10px 20px',
+                    '&:hover': {
+                      backgroundColor: '#45a049',
+                    },
+                  }}
+                >
+                  Books
+                </Button>
+              </Link>
+            </Link>
+          </div>
+
         )}
 
         {/* Conditional rendering of Login/Logout buttons */}

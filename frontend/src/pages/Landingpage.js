@@ -1,7 +1,60 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Typography, Button, Container, Grid, Card, CardContent, CardMedia } from '@mui/material';
 
 const Landingpage = () => {
+    const [featuredBooks, setFeaturedBooks] = useState([]);
+    const [latestReleases, setLatestReleases] = useState([]);
+    const [topGenres, setTopGenres] = useState([]);
+    const [popularBookSeries, setPopularBookSeries] = useState([]);
+    const dummyTopAuthors = [
+        { id: 1, volumeInfo: { title: 'J.K. Rowling', imageLinks: { thumbnail: 'https://source.unsplash.com/featured/ALx0hYEZT8o' } } },
+        { id: 2, volumeInfo: { title: 'Stephen King', imageLinks: { thumbnail: 'https://source.unsplash.com/featured/1_KJrA5JrR9HhI2B2-unsplash' } } },
+        { id: 3, volumeInfo: { title: 'Agatha Christie', imageLinks: { thumbnail: 'https://source.unsplash.com/featured/K6z_uX4nZVw' } } },
+        { id: 4, volumeInfo: { title: 'George R.R. Martin', imageLinks: { thumbnail: 'https://source.unsplash.com/featured/gtVh-0tXyNc' } } },
+        { id: 5, volumeInfo: { title: 'J.R.R. Tolkien', imageLinks: { thumbnail: 'https://source.unsplash.com/featured/Yia1H9c4v6Y' } } },
+      ];
+      
+
+    useEffect(() => {
+        const fetchBooks = async (query, setStateFunction) => {
+            try {
+                const response = await fetch(
+                    `https://www.googleapis.com/books/v1/volumes?q=${query}&maxResults=6`
+                );
+
+                if (!response.ok) {
+                    throw new Error('Failed to fetch book data');
+                }
+
+                const data = await response.json();
+                setStateFunction(data.items);
+            } catch (error) {
+                console.error('Error fetching book data:', error);
+            }
+        };
+
+        // Fetch featured books
+        fetchBooks('featuredbooks', setFeaturedBooks);
+
+        // Fetch latest releases
+        fetchBooks('subject:new', setLatestReleases);
+
+        // Fetch top genres (using a generic query)
+        fetchBooks('topgenre', setTopGenres);
+
+        // Fetch popular book series (using a series title query)
+        fetchBooks('popularbookseries', setPopularBookSeries);
+    }, []);
+
+    const truncateDescription = (description, maxLength = 200) => {
+        if (!description) return '';
+      
+        // Truncate the description to the specified length
+        const truncated = description.length > maxLength ? `${description.slice(0, maxLength)}...` : description;
+        return truncated;
+      };
+      
+
     return (
         <Container>
             {/* Hero Section */}
@@ -55,25 +108,27 @@ const Landingpage = () => {
                         Featured Books
                     </Typography>
                 </Grid>
-                {[1, 2, 3, 4, 5, 6].map((index) => (
-                    <Grid item key={index} xs={12} sm={4}>
+                {featuredBooks.map((book) => (
+                    <Grid item key={book.id} xs={12} sm={4}>
                         <Card elevation={6}>
                             <CardMedia
                                 component="img"
-                                height="200"
-                                image={`https://source.unsplash.com/random?book&${index}`} // Random book cover image
-                                alt={`Book ${index}`}
+                                height="300"
+                                width='100%'
+                                image={book.volumeInfo.imageLinks.thumbnail ? book.volumeInfo.imageLinks.thumbnail : `https://source.unsplash.com/random?book&${book.title}`} // Random book cover image
+                                alt={`Book ${book.volumeInfo.title}`}
                             />
                             <CardContent>
                                 <Typography variant="h6" align="center" gutterBottom>
-                                    Book Title {index}
+                                    {book.volumeInfo.title || 'Unknown Title'}
                                 </Typography>
                                 <Typography variant="body2" align="center">
-                                    Author: Author Name
+                                    Author: {book.volumeInfo.authors ? book.volumeInfo.authors.join(', ') : 'Unknown Author'}
                                 </Typography>
                             </CardContent>
                         </Card>
                     </Grid>
+
                 ))}
             </Grid>
 
@@ -84,21 +139,21 @@ const Landingpage = () => {
                         Latest Releases
                     </Typography>
                 </Grid>
-                {[7, 8, 9, 10].map((index) => (
-                    <Grid item key={index} xs={12} sm={4}>
+                {latestReleases.map((book) => (
+                    <Grid item key={book.id} xs={12} sm={4}>
                         <Card elevation={6}>
                             <CardMedia
                                 component="img"
-                                height="200"
-                                image={`https://source.unsplash.com/random?bookcover&${index}`} // Random book cover image
-                                alt={`Book ${index}`}
+                                height="300"
+                                image={book.volumeInfo.imageLinks?.thumbnail || `https://source.unsplash.com/random?book&${book.title}`}
+                                alt={`Book ${book.volumeInfo.title}`}
                             />
                             <CardContent>
                                 <Typography variant="h6" align="center" gutterBottom>
-                                    New Book Title {index}
+                                    {book.volumeInfo.title || 'Unknown Title'}
                                 </Typography>
                                 <Typography variant="body2" align="center">
-                                    Author: New Author Name
+                                    Author: {book.volumeInfo.authors ? book.volumeInfo.authors.join(', ') : 'Unknown Author'}
                                 </Typography>
                             </CardContent>
                         </Card>
@@ -113,19 +168,18 @@ const Landingpage = () => {
                         Top Genres
                     </Typography>
                 </Grid>
-                {[
-                    { name: 'Mystery', image: 'https://source.unsplash.com/random?mystery' },
-                    { name: 'Romance', image: 'https://source.unsplash.com/random?romance' },
-                    { name: 'Science Fiction', image: 'https://source.unsplash.com/random?scifi' },
-                    { name: 'Fantasy', image: 'https://source.unsplash.com/random?fantasy' },
-                    { name: 'Thriller', image: 'https://source.unsplash.com/random?thriller' },
-                ].map((genre, index) => (
-                    <Grid item key={index} xs={12} sm={4}>
+                {topGenres.map((genre) => (
+                    <Grid item key={genre.id} xs={12} sm={4}>
                         <Card elevation={6}>
-                            <CardMedia component="img" height="200" image={genre.image} alt={genre.name} />
+                            <CardMedia
+                                component="img"
+                                height="200"
+                                image={genre.volumeInfo?.imageLinks?.thumbnail || 'https://source.unsplash.com/random?genre'}
+                                alt={genre.volumeInfo?.title || 'Unknown Genre'}
+                            />
                             <CardContent>
                                 <Typography variant="h6" align="center" gutterBottom>
-                                    {genre.name}
+                                    {genre.volumeInfo?.categories || 'Unknown Genre'}
                                 </Typography>
                             </CardContent>
                         </Card>
@@ -140,25 +194,25 @@ const Landingpage = () => {
                         Popular Authors
                     </Typography>
                 </Grid>
-                {[
-                    { name: 'Author 1', image: 'https://source.unsplash.com/random?man' },
-                    { name: 'Author 2', image: 'https://source.unsplash.com/random?women' },
-                    { name: 'Author 3', image: 'https://source.unsplash.com/random?writer' },
-                    { name: 'Author 4', image: 'https://source.unsplash.com/random?port' },
-                    { name: 'Author 5', image: 'https://source.unsplash.com/random?author' }
-                ].map((author, index) => (
-                    <Grid item key={index} xs={12} sm={4}>
+                {dummyTopAuthors.map((author) => (
+                    <Grid item key={author.id} xs={12} sm={4}>
                         <Card elevation={6}>
-                            <CardMedia component="img" height="200" image={author.image} alt={author.name} />
+                            <CardMedia
+                                component="img"
+                                height="200"
+                                image={author.volumeInfo?.imageLinks?.thumbnail || 'https://source.unsplash.com/random?author'}
+                                alt={author.volumeInfo?.title || 'Unknown Author'}
+                            />
                             <CardContent>
                                 <Typography variant="h6" align="center" gutterBottom>
-                                    {author.name}
+                                    {author.volumeInfo?.title || 'Unknown Author'}
                                 </Typography>
                             </CardContent>
                         </Card>
                     </Grid>
                 ))}
             </Grid>
+
             {/* Popular Book Series Section */}
             <Grid container spacing={4} style={{ marginTop: '50px' }}>
                 <Grid item xs={12}>
@@ -166,27 +220,28 @@ const Landingpage = () => {
                         Popular Book Series
                     </Typography>
                 </Grid>
-                {[
-                    { name: 'Harry Potter', image: 'https://source.unsplash.com/random?harrypotter', description: 'Magical adventures at Hogwarts' },
-                    { name: 'Game of Thrones', image: 'https://source.unsplash.com/random?gameofthrones', description: 'Epic fantasy series with political intrigue' },
-                    { name: 'The Hunger Games', image: 'https://source.unsplash.com/random?hungergames', description: 'Dystopian survival series' },
-                    { name: 'Percy Jackson', image: 'https://source.unsplash.com/random?percyjackson', description: 'Modern-day demigod adventures' },
-                ].map((series, index) => (
-                    <Grid item key={index} xs={12} sm={6} md={4} lg={3}>
+                {popularBookSeries.map((series) => (
+                    <Grid item key={series.id} xs={12} sm={6} md={4} lg={3}>
                         <Card elevation={6}>
-                            <CardMedia component="img" height="200" image={series.image} alt={series.name} />
+                            <CardMedia
+                                component="img"
+                                height="300"
+                                image={series.volumeInfo?.imageLinks?.thumbnail || 'https://source.unsplash.com/random?bookseries'}
+                                alt={series.volumeInfo?.title || 'Unknown Series'}
+                            />
                             <CardContent>
                                 <Typography variant="h6" align="center" gutterBottom>
-                                    {series.name}
+                                    {series.volumeInfo?.title || 'Unknown Series'}
                                 </Typography>
                                 <Typography variant="body2" align="center" color="textSecondary">
-                                    {series.description}
+                                {truncateDescription(series.volumeInfo?.description) || 'No description available'}
                                 </Typography>
                             </CardContent>
                         </Card>
                     </Grid>
                 ))}
             </Grid>
+
 
 
             {/* Call-to-Action */}
