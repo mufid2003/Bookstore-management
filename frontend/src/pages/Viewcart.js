@@ -53,13 +53,16 @@ export default function Viewcart() {
   const handleQuantityChange = async (id, quant, change) => {
 
     try {
-      let userId = localStorage.getItem('user_id');
-      await axios.put(`${process.env.REACT_APP_API_URL}/cart/${userId}/${id}`, { qt: quant + change }, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }).then(res => {
-      });
+      if(quant+change > 0){
+        let userId = localStorage.getItem('user_id');
+        await axios.put(`${process.env.REACT_APP_API_URL}/cart/${userId}/${id}`, { qt: quant + change }, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }).then(res => {
+        });
+      }
+      
 
       // Assuming the API response includes the updated cart details
       fetchCartDetails();

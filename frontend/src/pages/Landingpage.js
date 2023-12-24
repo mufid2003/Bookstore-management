@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Typography, Button, Container, Grid, Card, CardContent, CardMedia } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 
 const Landingpage = () => {
     const [featuredBooks, setFeaturedBooks] = useState([]);
@@ -12,9 +13,9 @@ const Landingpage = () => {
         { id: 3, volumeInfo: { title: 'Agatha Christie', imageLinks: { thumbnail: 'https://source.unsplash.com/featured/K6z_uX4nZVw' } } },
         { id: 4, volumeInfo: { title: 'George R.R. Martin', imageLinks: { thumbnail: 'https://source.unsplash.com/featured/gtVh-0tXyNc' } } },
         { id: 5, volumeInfo: { title: 'J.R.R. Tolkien', imageLinks: { thumbnail: 'https://source.unsplash.com/featured/Yia1H9c4v6Y' } } },
-      ];
-      
+    ];
 
+    const navigate = useNavigate();
     useEffect(() => {
         const fetchBooks = async (query, setStateFunction) => {
             try {
@@ -48,12 +49,29 @@ const Landingpage = () => {
 
     const truncateDescription = (description, maxLength = 200) => {
         if (!description) return '';
-      
+
         // Truncate the description to the specified length
         const truncated = description.length > maxLength ? `${description.slice(0, maxLength)}...` : description;
         return truncated;
-      };
-      
+    };
+
+    const handleExplore = () => {
+        let userId = localStorage.getItem('user_id');
+        let role = localStorage.getItem('role');
+        if(userId){
+            if(role === 'customer'){
+                navigate('/customer');
+            }else if(role === 'employee'){
+                navigate('/employee')
+            }else if( role === 'admin'){
+                navigate('/admin')
+            }else{
+                navigate('/login');
+            }
+        }else{
+            navigate('/login');
+        }
+    }
 
     return (
         <Container>
@@ -89,9 +107,10 @@ const Landingpage = () => {
                             </Typography>
                             <Grid container spacing={2} justifyContent="center">
                                 <Grid item>
-                                    <Button variant="contained" color="primary" size="large">
+                                    <Button variant="contained" color="primary" size="large" onClick={handleExplore}> 
                                         Browse Books
                                     </Button>
+
                                 </Grid>
                             </Grid>
                         </CardContent>
@@ -234,7 +253,7 @@ const Landingpage = () => {
                                     {series.volumeInfo?.title || 'Unknown Series'}
                                 </Typography>
                                 <Typography variant="body2" align="center" color="textSecondary">
-                                {truncateDescription(series.volumeInfo?.description) || 'No description available'}
+                                    {truncateDescription(series.volumeInfo?.description) || 'No description available'}
                                 </Typography>
                             </CardContent>
                         </Card>
@@ -257,7 +276,7 @@ const Landingpage = () => {
                             </Typography>
                             <Grid container spacing={2} justifyContent="center">
                                 <Grid item>
-                                    <Button variant="contained" color="primary" size="large">
+                                    <Button variant="contained" color="primary" size="large" onClick={handleExplore}>
                                         Explore Books
                                     </Button>
                                 </Grid>

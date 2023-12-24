@@ -35,9 +35,9 @@ const Header = () => {
   useEffect(() => {
     // Check if the user is logged in when the route changes
     updateUserInfo();
-    if(role === 'admin'){
-      navigate('/admin');
-    }
+    // if(role === 'admin'){
+    //   navigate('/admin');
+    // }
   }, [location.pathname]);
 
   const handleLogout = () => {
