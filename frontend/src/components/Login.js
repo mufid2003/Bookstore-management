@@ -34,7 +34,7 @@ function Login() {
       let endpoint;
 
       if (isSignUp) {
-        endpoint = 'http://localhost:5000/api/users';
+        endpoint = `${process.env.REACT_APP_API_URL}/users`;
         response = await fetch(endpoint, {
           method: 'POST',
           headers: {
@@ -43,7 +43,7 @@ function Login() {
           body: JSON.stringify({ name, username, password, email, role }),
         });
       } else {
-        endpoint = 'http://localhost:5000/api/login';
+        endpoint = `${process.env.REACT_APP_API_URL}/login`;
         response = await fetch(endpoint, {
           method: 'POST',
           headers: {
@@ -54,23 +54,22 @@ function Login() {
       }
 
       if (response.ok) {
-        console.log('Request successful');
 
         if (isSignUp) {
           if (response.status === 201) {
             // Registration successful
-            console.log('User registered successfully');
+            
             navigate('/'); // Redirect to the main page after successful registration
           }
         } else {
           if (response.status === 200) {
             // Login successful
-            console.log('Login successful');
+
             const responseData = await response.json();
             localStorage.setItem('user_id', responseData.user._id);
             localStorage.setItem('username', responseData.user.username);
             localStorage.setItem('role', responseData.user.role);
-            console.log(responseData);
+     
             localStorage.setItem('token', responseData.token);
             if (responseData.user.role === 'customer') {
               navigate('/customer');

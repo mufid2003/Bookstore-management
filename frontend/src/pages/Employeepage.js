@@ -17,7 +17,7 @@ export default function Employeepage() {
         Authorization: `Bearer ${token}`,
       },
     }).then(res => {
-      console.log(res);
+    
       setBooks(res.data);
     }).catch(e => {
       console.log(e);
@@ -27,7 +27,6 @@ export default function Employeepage() {
   const handleDelete = async (bookId) => {
     try {
       // Dummy delete logic (replace with actual delete logic)
-      console.log('Deleting book with ID:', bookId);
 
       const isConfirmed = window.confirm('Are you sure you want to delete this book?');
 
@@ -38,7 +37,6 @@ export default function Employeepage() {
             Authorization: `Bearer ${token}`,
           },
         }).then(res => {
-          console.log(res.data);
           alert('Book deleted successfully'); // You can replace this with your actual success message
           setBooks((prevBooks) => prevBooks.filter((book) => book._id !== bookId));
         }).catch(e => {

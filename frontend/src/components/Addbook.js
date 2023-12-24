@@ -51,7 +51,6 @@ export default function Addbook() {
 
             if (response.status === 201) {
                 // Book added successfully
-                console.log('Book added successfully');
                 setSnackbarMessage('Book added successfully!');
                 setSnackbarOpen(true);
                 // Clear the form after adding the book

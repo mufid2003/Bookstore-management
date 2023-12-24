@@ -126,8 +126,8 @@ export default function Viewcart() {
         if(response.status===201){
           setSnackbarOpen(true);
         }
-        // Assuming the API response includes the newly created order details
-        console.log('Order placed:', response.data);
+        
+       
       } catch (error) {
         console.error('Error placing order:', error);
       }
