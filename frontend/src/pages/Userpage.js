@@ -33,6 +33,7 @@ export default function Userpage() {
       .catch((e) => {
         console.log(e);
         setLoading(false);
+        alert("Error in displaying books.")
       });
   }, [token]);
 

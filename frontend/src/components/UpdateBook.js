@@ -30,6 +30,7 @@ export default function UpdateBook() {
     })
       .catch((error) => {
         console.error('Error fetching book details:', error);
+        alert('Error fetching book details:', error)
       });
   }, [id]);
 
@@ -50,6 +51,10 @@ export default function UpdateBook() {
         setTimeout(() => {
           navigate('/employee');
         }, 2000);
+      }
+      else{
+        const responseData = await response.json();
+        alert(responseData.message)
       }
 
       // Redirect to the book details page or any other page

@@ -65,7 +65,13 @@ export default function Addbook() {
                     publishdate: null,
                 });
             }
+            else{
+                setSnackbarMessage(response.message);
+                setSnackbarOpen(true);
+            }
         } catch (error) {
+            setSnackbarMessage('Can not add Book successfully!');
+            setSnackbarOpen(true);
             console.error('Error adding book:', error);
         }
     };

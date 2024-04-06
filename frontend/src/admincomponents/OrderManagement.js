@@ -54,6 +54,7 @@ const OrderManagement = () => {
         setOrders(data.orders || []);
       } catch (error) {
         console.error('Error fetching orders:', error.message);
+        alert('Error fetching orders:', error.message)
       }
     };
 
@@ -142,9 +143,13 @@ const OrderManagement = () => {
           handleCloseAddUpdateDialog();
         } else {
           console.error('Error updating order:', response.status);
+          alert('Error updating order:', response.status)
         }
       })
-      .catch((error) => console.error('Error updating order:', error));
+      .catch((error) => {
+        console.error('Error updating order:', error)
+        alert('Error updating order:', error)
+      });
   };
 
   const handleDeleteOrder = (orderId) => {
@@ -167,9 +172,13 @@ const OrderManagement = () => {
           setOpenSnackbar(true);
         } else {
           console.error('Error deleting order:', response.status);
+          alert('Error deleting order:', response.status)
         }
       })
-      .catch((error) => console.error('Error deleting order:', error));
+      .catch((error) => {
+        console.error('Error deleting order:', error)
+        alert('Error deleting order:', error)
+      });
   };
 
   const handleSnackbarClose = () => {
@@ -186,7 +195,7 @@ const OrderManagement = () => {
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell>Order ID</TableCell>
+              {/* <TableCell>Order ID</TableCell> */}
               <TableCell>User</TableCell>
               <TableCell>Amount</TableCell>
               <TableCell>Status</TableCell>
@@ -198,7 +207,7 @@ const OrderManagement = () => {
           <TableBody>
             {orders.map((order) => (
               <TableRow key={order._id}>
-                <TableCell>{order._id}</TableCell>
+                {/* <TableCell>{order._id}</TableCell> */}
                 <TableCell>{order.user_id ? order.user_id.name : 'N/A'}</TableCell>
                 <TableCell>{order.amount}</TableCell>
                 <TableCell>{order.status}</TableCell>

@@ -62,10 +62,14 @@ const UserManagement = () => {
 
           handleCloseDialog();
         } else {
-          console.error('Error updating user:', response.status);
+          console.error('Error updating user:', response.status)
+          alert('Error updating user:', response.status);
         }
       })
-      .catch(error => console.error('Error updating user:', error));
+      .catch(error => {
+        console.error('Error updating user:', error)
+        alert('Error updating user:', error)
+      });
   };
 
   const handleAddUser = () => {
@@ -86,10 +90,14 @@ const UserManagement = () => {
 
           handleCloseDialog();
         } else {
-          console.error('Error adding user:', response.status);
+          console.error('Error adding user:', response.status)
+          alert('Error adding user:', response.status);
         }
       })
-      .catch(error => console.error('Error adding user:', error));
+      .catch(error => {
+        console.error('Error adding user:', error)
+        alert('Error adding user:', error)
+      });
   };
 
   const handleDeleteUser = (userId) => {
@@ -115,9 +123,13 @@ const UserManagement = () => {
           setOpenSnackbar(true);
         } else {
           console.error('Error deleting user:', response.status);
+          alert('Error deleting user:', response.status);
         }
       })
-      .catch(error => console.error('Error deleting user:', error));
+      .catch(error => {
+        console.error('Error deleting user:', error)
+        alert('Error deleting user:', error)
+      });
   };
 
   // const handleFormChange = (event) => {

@@ -68,6 +68,7 @@ export default function Viewcart() {
       fetchCartDetails();
     } catch (error) {
       console.error('Error updating quantity:', error);
+      alert(error)
 
       // Handle errors here (e.g., show an error message to the user)
     }
@@ -92,12 +93,14 @@ export default function Viewcart() {
           setCart((prevBooks) => prevBooks.filter((book) => book.bookDetails._id !== bookId));
         }).catch(e => {
           console.log(e);
+          alert(e)
         })
 
       }
       // Simulate a delete by filtering out the deleted book from the local state
     } catch (error) {
       console.error('Error deleting book:', error.message);
+      alert(error.message)
     }
   };
 

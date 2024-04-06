@@ -103,7 +103,11 @@ const BooksManagement = () => {
 
         handleCloseDialog();
       })
-      .catch(error => console.error('Error updating book:', error));
+      .catch(error => {
+        console.error('Error updating book:', error)
+        setSnackbarMessage('Error Updating book:', error);
+        setOpenSnackbar(true);
+      });
   };
 
   const handleAddBook = () => {
@@ -123,7 +127,11 @@ const BooksManagement = () => {
 
         handleCloseDialog();
       })
-      .catch(error => console.error('Error adding book:', error));
+      .catch(error => {
+        console.error('Error adding book:', error)
+        setSnackbarMessage('Error adding book',error);
+        setOpenSnackbar(true);
+      });
   };
 
   const handleDeleteBook = (bookId) => {
@@ -152,7 +160,11 @@ const BooksManagement = () => {
           console.error('Error deleting book:', response.status);
         }
       })
-      .catch(error => console.error('Error deleting book:', error));
+      .catch(error => {
+        console.error('Error deleting book:', error)
+        setSnackbarMessage('Error Deleting book',error);
+        setOpenSnackbar(true);
+      });
   };
 
   const handleFormChange = (event) => {

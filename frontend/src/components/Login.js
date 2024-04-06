@@ -60,6 +60,9 @@ function Login() {
             // Registration successful
             
             navigate('/'); // Redirect to the main page after successful registration
+          }else{
+            const responseData = await response.json();
+            alert(responseData.message)
           }
         } else {
           if (response.status === 200) {
@@ -85,9 +88,13 @@ function Login() {
         }
       } else {
         console.error('Request failed');
+        const responseData = await response.json();
+        console.log(response)
+        alert(responseData.message)
       }
     } catch (error) {
       console.error('Error during request:', error.message);
+      alert('Error during request');
     }
   };
 
