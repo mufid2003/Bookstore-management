@@ -3,7 +3,7 @@ const Book = require('../models/Book');
 // Controller to list all books
 exports.getAllBooks = async (req, res) => {
   try {
-    const books = await Book.find();
+    const books = await Book.find().sort({ _id: -1 });
     res.json(books);
   } catch (error) {
     res.status(500).json({ message: error.message });

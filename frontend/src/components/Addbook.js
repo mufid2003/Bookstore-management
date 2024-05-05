@@ -40,7 +40,11 @@ export default function Addbook() {
 
     const handleAddBook = async () => {
         // Validate bookData or perform additional checks if needed
-
+        if (!bookData.title || !bookData.author || !bookData.ISBN || !bookData.price || !bookData.description) {
+            setSnackbarMessage('Please fill in all required fields.');
+            setSnackbarOpen(true);
+            return;
+        }
         // Pass the bookData to the parent component
         try {
             const response = await axios.post(`${process.env.REACT_APP_API_URL}/books`, bookData, {
@@ -85,7 +89,7 @@ export default function Addbook() {
                     <Grid item xs={12} sm={6}>
                         <TextField
                             id="title"
-                            label="Title"
+                            label="Title *"
                             variant="filled"
                             fullWidth
                             value={bookData.title}
@@ -95,7 +99,7 @@ export default function Addbook() {
                     <Grid item xs={12} sm={6}>
                         <TextField
                             id="author"
-                            label="Author"
+                            label="Author *"
                             variant="filled"
                             fullWidth
                             value={bookData.author}
@@ -115,7 +119,7 @@ export default function Addbook() {
                     <Grid item xs={12} sm={6}>
                         <TextField
                             id="ISBN"
-                            label="ISBN"
+                            label="ISBN *"
                             variant="filled"
                             fullWidth
                             value={bookData.ISBN}
@@ -136,7 +140,7 @@ export default function Addbook() {
                     <Grid item xs={12} sm={6}>
                         <TextField
                             id="price"
-                            label="Price"
+                            label="Price *"
                             variant="filled"
                             fullWidth
                             type="number"
@@ -147,7 +151,7 @@ export default function Addbook() {
                     <Grid item xs={12}>
                         <TextField
                             id="description"
-                            label="Description"
+                            label="Description *"
                             variant="filled"
                             multiline
                             rows={4}
@@ -178,7 +182,7 @@ export default function Addbook() {
                 onClose={handleSnackbarClose}
                 anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
             >
-                <Alert onClose={handleSnackbarClose} severity="success" sx={{ width: '100%' }}>
+                <Alert onClose={handleSnackbarClose} severity="info" sx={{ width: '100%' }}>
                     {snackbarMessage}
                 </Alert>
             </Snackbar>

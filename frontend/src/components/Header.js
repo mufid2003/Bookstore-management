@@ -56,7 +56,7 @@ const Header = () => {
     <AppBar position="static" sx={{ background: 'linear-gradient(45deg, #4CAF50, #8BC34A)' }}>
       <Toolbar>
         {/* Left side options */}
-        <IconButton
+       {/* <IconButton
           size="large"
           edge="start"
           color="inherit"
@@ -64,7 +64,7 @@ const Header = () => {
           sx={{ mr: 2 }}
         >
           <MenuIcon />
-        </IconButton>
+  </IconButton>*/}
 
         <Typography
           variant="h4"

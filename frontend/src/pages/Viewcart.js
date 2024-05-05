@@ -16,6 +16,7 @@ export default function Viewcart() {
   const token = localStorage.getItem('token');
   const navigate = useNavigate();
   const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [severity,setSeverity]=useState("success")
 
   useEffect(() => {
     fetchCartDetails();
@@ -105,6 +106,16 @@ export default function Viewcart() {
   };
 
   const handleOrder = async () => {
+      /*
+      Bug 11 (round 1)
+      checking if cart is empth than order should not be placed
+      */
+    if (cart.length === 0) {
+      // Cart is empty, display a message or take appropriate action
+      alert('Your cart is empty. Please add items to your cart before placing an order.');
+      return;
+    }
+
     const isConfirmed = window.confirm('Are you sure you want to Place the order.');
     if (isConfirmed) {
       try {
@@ -126,13 +137,18 @@ export default function Viewcart() {
             Authorization: `Bearer ${token}`,
           },
         });
-        if(response.status===201){
+      
+        if(response.ok){
           setSnackbarOpen(true);
+          setSeverity("success")
+        }else{
+          alert("Can not place order")
         }
         
        
       } catch (error) {
         console.error('Error placing order:', error);
+        alert(error.response.data.message)
       }
     }
   }

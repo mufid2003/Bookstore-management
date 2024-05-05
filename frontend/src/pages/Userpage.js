@@ -185,6 +185,7 @@ export default function Userpage() {
               <Select
                 labelId="filter-criteria-label"
                 id="filter-criteria"
+                label="Filter by"
                 value={filterCriteria}
                 onChange={handleFilterChange}
               >
@@ -201,6 +202,7 @@ export default function Userpage() {
                 <Select
                   labelId="genre-label"
                   id="genre"
+                  label="Select Genre"
                   value={priceRange.genre}
                   onChange={(e) => handlePriceRangeChange(e, 'genre')}
                 >

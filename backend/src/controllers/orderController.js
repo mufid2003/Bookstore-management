@@ -1,5 +1,6 @@
 const Order = require('../models/Order');
 const User = require('../models/User');
+const Book = require('../models/Book')
 
 // Controller to list all orders
 exports.getAllOrders = async (req, res) => {
@@ -55,19 +56,30 @@ exports.getOneOrder = async (req, res) => {
 exports.addOrder = async (req, res) => {
   const { user_id, items, status } = req.body;
 
-  // Calculate the amount based on the quantity and price of each book
-  const amount = items.reduce((totalAmount, item) => {
-    return totalAmount + item.quantity * item.price;
-  }, 0);
-
-  const newOrder = new Order({
-    user_id,
-    items,
-    amount, // Add the calculated amount
-    status,
-  });
-
   try {
+    // Check availability of each book
+    for (const item of items) {
+      const book = await Book.findById(item.book_id);
+      if (!book) {
+        return res.status(400).json({ message: `Book with ID ${item.book_id} not found.` });
+      }
+      if (item.quantity > book.quantity) {
+        return res.status(400).json({ message: `Ordered quantity exceeds available quantity for book ${book.title}.` });
+      }
+    }
+
+    // Calculate the amount based on the quantity and price of each book
+    const amount = items.reduce((totalAmount, item) => {
+      return totalAmount + item.quantity * item.price;
+    }, 0);
+
+    const newOrder = new Order({
+      user_id,
+      items,
+      amount, // Add the calculated amount
+      status,
+    });
+
     const savedOrder = await newOrder.save();
 
     // Update the user's order array in the User schema
@@ -85,6 +97,7 @@ exports.addOrder = async (req, res) => {
     res.status(400).json({ message: error.message });
   }
 };
+
 
 // Controller to update an order
 exports.updateOrder = async (req, res) => {
