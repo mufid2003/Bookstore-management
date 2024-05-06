@@ -17,6 +17,10 @@ import {
   IconButton,
   Snackbar,
   TextField,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
 } from '@mui/material';
 import { Delete as DeleteIcon, Visibility as VisibilityIcon, Add as AddIcon } from '@mui/icons-material';
 
@@ -127,6 +131,26 @@ const OrderManagement = () => {
   };
 
   const handleUpdateOrder = () => {
+    console.log(formValues)
+    // Calculate total amount
+    const totalAmount = formValues.items.reduce((total, item) => {
+      const itemQuantity = parseInt(item.quantity, 10); // convert quantity to a number
+      const itemPrice = parseFloat(item.price); // convert price to a number
+      return total + (itemQuantity * itemPrice);
+    }, 0);
+
+    // Update formValues with the new total amount
+    const updatedFormValues = {
+      ...formValues,
+      amount: totalAmount,
+    };
+
+    // Function to update formValues
+    setFormValues(updatedFormValues);
+  
+    if (true) {
+      console.log(formValues.amount)
+    }
     axios
       .put(`${API_URL}/orders/${editingOrder._id}`, formValues, {
         headers: {
@@ -264,14 +288,15 @@ const OrderManagement = () => {
       <Dialog open={openAddUpdateDialog} onClose={handleCloseAddUpdateDialog}>
         <DialogTitle>{editingOrder ? 'Update Order' : 'Add Order'}</DialogTitle>
         <DialogContent>
-          <TextField
+          {/* <TextField
             id="user_id"
             label="User ID"
             fullWidth
             margin="normal"
             value={formValues.user_id ? formValues.user_id : ''}
             onChange={(e) => handleFormChange('user_id', e.target.value)}
-          />
+            disabled={true}
+          /> */}
 
           {formValues.items.map((item, index) => (
             <div key={index}>
@@ -280,8 +305,9 @@ const OrderManagement = () => {
                 label={`Book ID ${index + 1}`}
                 fullWidth
                 margin="normal"
-                value={item.book_id ? item.book_id : ''}
+                value={item.book_id ? item.book_id._id : ''}
                 onChange={(e) => handleItemChange(index, 'book_id', e.target.value)}
+                disabled={true}
               />
               <TextField
                 id={`quantity_${index}`}
@@ -318,14 +344,22 @@ const OrderManagement = () => {
             onChange={(e) => handleFormChange('amount', e.target.value)}
           />
 
-          <TextField
-            id="status"
-            label="Status"
-            fullWidth
-            margin="normal"
-            value={formValues.status ? formValues.status : ''}
-            onChange={(e) => handleFormChange('status', e.target.value)}
-          />
+          <FormControl fullWidth margin="normal">
+            <InputLabel id="status-label">Status</InputLabel>
+            <Select
+              labelId="status-label"
+              id="status"
+              label="status"
+              value={formValues.status ? formValues.status : ''}
+              onChange={(e) => handleFormChange('status', e.target.value)}
+            >
+              <MenuItem value="pending">Pending</MenuItem>
+              <MenuItem value="processing">Processing</MenuItem>
+              <MenuItem value="out for delivery">Out for Delivery</MenuItem>
+              <MenuItem value="Delivered">Delivered</MenuItem>
+              {/* Add more statuses as needed */}
+            </Select>
+          </FormControl>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseAddUpdateDialog} color="primary">
